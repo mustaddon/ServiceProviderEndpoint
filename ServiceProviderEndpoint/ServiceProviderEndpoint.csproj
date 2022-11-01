@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\ServiceProviderEndpoint.snk</AssemblyOriginatorKeyFile>
+		<AssemblyVersion>0.9.0</AssemblyVersion>
+		<FileVersion>0.9.0</FileVersion>
+		<Version>0.9.0</Version>
+		<Company></Company>
+		<Authors>Leonid Salavatov</Authors>
+		<Copyright>Leonid Salavatov 2022</Copyright>
+		<PackageId>ServiceProviderEndpoint</PackageId>
+		<Product>ServiceProviderEndpoint</Product>
+		<Title>ServiceProviderEndpoint</Title>
+		<Description>WebApi endpoint for IServiceProvider</Description>
+		<PackageTags>serviceprovider servicefactory service-provider service-factory endpoint extension minimal-api web-api rest-api ioc-rest ioc-endpoint</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageProjectUrl>https://github.com/mustaddon/ServiceProviderEndpoint</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/mustaddon/ServiceProviderEndpoint</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<NeutralLanguage />
+		<PackageReleaseNotes></PackageReleaseNotes>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Extensions.Primitives">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.Extensions.Primitives.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.AspNetCore.Http.Abstractions">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.AspNetCore.Http.Features">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.AspNetCore.Http.Results">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.AspNetCore.Http.Results.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.AspNetCore.Routing">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.AspNetCore.Routing.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Net.Http.Headers">
+			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.8\ref\net6.0\Microsoft.Net.Http.Headers.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="TypeSerialization" Version="1.0.2" />
+		<PackageReference Include="SingleApi.Contracts" Version="1.0.1" />
+	</ItemGroup>
+
+</Project>

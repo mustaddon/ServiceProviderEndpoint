@@ -1,0 +1,14 @@
+﻿{
+  "profiles": {
+    "Example.WebApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "services/IMediator/Send/Ping?args=[{\"Message\":\"TEST\"}]",
+      "applicationUrl": "https://localhost:7149;http://localhost:5149",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
