@@ -24,10 +24,12 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// MediatR registration
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
+// Endpoint mapping
 app.MapServiceProvider("services", builder.Services); 
 
 app.Run();

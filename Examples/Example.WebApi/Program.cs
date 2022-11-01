@@ -16,6 +16,7 @@ builder.Services.AddScoped(typeof(IExampleGenericService<>), typeof(ExampleGener
 
 var app = builder.Build();
 
+// Endpoint mapping
 app.MapServiceProvider("services", builder.Services
     // add a filter if needed
     .Where(x => x.ServiceType != typeof(IConfiguration)),
