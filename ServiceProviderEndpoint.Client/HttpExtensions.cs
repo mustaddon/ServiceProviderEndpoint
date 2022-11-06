@@ -39,16 +39,6 @@ internal static class HttpExtensions
         return file;
     }
 
-    public static Task<HttpResponseMessage> PostAsStream(this HttpClient client, string uri, object? request, CancellationToken cancellationToken)
-    {
-        if (request is not Stream stream)
-            throw new ArgumentNullException(nameof(request));
-
-        var content = new StreamContent(stream);
-
-        return client.PostAsync(uri, content, cancellationToken);
-    }
-
     public static Task<HttpResponseMessage> PostAsSapiFile(this HttpClient client, string uri, ISapiFileReadOnly file, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken)
     {
         var content = new StreamContent(file.Content);
@@ -75,11 +65,6 @@ internal static class HttpExtensions
 
         response.Dispose();
         throw new HttpRequestException($"Response status code does not indicate success: {(int)response.StatusCode} ({response.ReasonPhrase})");
-    }
-
-    public static bool IsPlainText(this MediaTypeHeaderValue? value)
-    {
-        return string.Equals(value?.MediaType, "text/plain", StringComparison.InvariantCultureIgnoreCase);
     }
 
 

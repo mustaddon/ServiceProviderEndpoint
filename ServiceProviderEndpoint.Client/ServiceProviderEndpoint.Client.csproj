@@ -15,7 +15,7 @@
 		<PackageId>ServiceProviderEndpoint.Client</PackageId>
 		<Product>ServiceProviderEndpoint.Client</Product>
 		<Title>ServiceProviderEndpoint.Client</Title>
-		<Description>ServiceProvider endpoint client</Description>
+		<Description>ServiceProviderEndpoint Client</Description>
 		<PackageTags>serviceprovider servicefactory service-provider service-factory endpoint-client api-client rest-client spe-client</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/mustaddon/ServiceProviderEndpoint</PackageProjectUrl>

@@ -24,22 +24,22 @@ class EndpointProcessor
     readonly TypeDeserializer _typeDeserializer;
     readonly ConcurrentDictionary<string, TypeMember> _typeMembers = new();
 
-    public Task<IResult> ProcessGet(HttpContext ctx, string serviceType, string memberName, string? argumentTypes, string? args)
+    public Task<IResult> ProcessGet(HttpContext ctx, string service, string member, string? parameters, string? args)
     {
         var argsObj = args == null ? null : JsonSerializer.Deserialize<JsonArray>(args, _options.JsonSerialization);
 
         ctx.Response.Headers.AddNoCache();
 
-        return Process(ctx, serviceType, memberName, argumentTypes, argsObj);
+        return Process(ctx, service, member, parameters, argsObj);
     }
 
-    public async Task<IResult> ProcessPost(HttpContext ctx, string serviceType, string memberName, string? argumentTypes, string? args)
+    public async Task<IResult> ProcessPost(HttpContext ctx, string service, string member, string? parameters, string? args)
     {
         var argsObj = args != null ? JsonSerializer.Deserialize<JsonArray>(args, _options.JsonSerialization)
             : ctx.Request.IsJson() ? await JsonSerializer.DeserializeAsync<JsonArray>(ctx.Request.Body, _options.JsonSerialization, ctx.RequestAborted)
             : null;
 
-        return await Process(ctx, serviceType, memberName, argumentTypes, argsObj);
+        return await Process(ctx, service, member, parameters, argsObj);
     }
 
     Task<IResult> Process(HttpContext ctx, string serviceType, string memberName, string? argumentTypes, JsonArray? args)

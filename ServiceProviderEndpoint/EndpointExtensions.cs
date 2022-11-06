@@ -9,7 +9,7 @@ public static class ServiceProviderEndpointExtensions
 {
     public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, IEnumerable<Type> additionalTypes, Action<SpeOptions>? optionsConfigurator = null)
     {
-        var pattern = $"{route.TrimEnd('/')}/{{serviceType:required}}/{{memberName:required}}/{{argumentTypes?}}";
+        var pattern = $"{route.TrimEnd('/')}/{{service:required}}/{{member:required}}/{{parameters?}}";
         var options = new SpeOptions(); optionsConfigurator?.Invoke(options);
         var processor = new EndpointProcessor(serviceDescriptors, additionalTypes, options);
 
