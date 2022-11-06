@@ -4,6 +4,8 @@ namespace Example.WebApi.Services;
 
 public class ExampleService : IExampleService
 {
+    public int SimpleField = 555;
+
     public int SimpleProp => 777;
 
     public int SimpleMethod(int a, int b = 10) => a * b;

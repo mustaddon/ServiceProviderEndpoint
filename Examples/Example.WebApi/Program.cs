@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 // Other services registration
+builder.Services.AddScoped<ExampleService>();
 builder.Services.AddScoped<IExampleService, ExampleService>();
 builder.Services.AddScoped(typeof(IExampleGenericService<>), typeof(ExampleGenericService<>));
 
