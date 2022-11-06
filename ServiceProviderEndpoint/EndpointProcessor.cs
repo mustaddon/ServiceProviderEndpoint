@@ -14,7 +14,15 @@ class EndpointProcessor
     {
         _options = options;
         _typeDeserializer = new TypeDeserializer(services
-            .Select(x => x.ServiceType)
+            .SelectMany(x => new[] { x.ServiceType }
+                .Concat(x.ServiceType.GetFields(TypeScanner.Flags)
+                    .Select(x => x.FieldType))
+                .Concat(x.ServiceType.GetProperties(TypeScanner.Flags)
+                    .Select(x => x.PropertyType))
+                .Concat(x.ServiceType.GetMethods(TypeScanner.Flags)
+                    .SelectMany(x => x.GetParameters())
+                    .Select(x => x.ParameterType))
+                .Where(x => !x.IsGenericParameter))
             .Concat(types)
             .Concat(typeof(SapiFile).Assembly.GetTypes().Where(x => x.IsPublic && !x.IsStaticOrAttribute()))
             .Concat(new[] { typeof(Stream) }));

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SingleApi;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -45,14 +44,14 @@ internal static class TypeMemberExtensions
         {
             var type = parameters[i].Type;
 
-            if (type == typeof(Stream))
+            if (type.Equals(Types.Stream))
                 result[i] = new SpeStream(ctx.Request);
-            else if (type == typeof(CancellationToken))
+            else if (type.IsAssignableFrom(Types.CancellationToken))
                 result[i] = ctx.RequestAborted;
-            else if (!type.IsAbstract && typeof(ISapiFile).IsAssignableFrom(type))
+            else if (type.IsAssignableFrom(Types.SapiFile))
+                result[i] = ctx.Request.ToSapiFile(Types.SapiFile, jsonOptions);
+            else if (!type.IsAbstract && Types.ISapiFile.IsAssignableFrom(type))
                 result[i] = ctx.Request.ToSapiFile(type, jsonOptions);
-            else if (type.IsAbstract && typeof(ISapiFileReadOnly).IsAssignableFrom(type))
-                result[i] = ctx.Request.ToSapiFile(typeof(SapiFile), jsonOptions);
             else if (argsIndex >= argsCount)
                 result[i] = parameters[i].DefaultValue;
             else

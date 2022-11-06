@@ -10,6 +10,8 @@ public class ExampleService : IExampleService
 
     public int SimpleMethod(int a, int b = 10) => a * b;
 
+    public Task VoidMethod() => Task.CompletedTask;
+
     public Task<object> CastMethod(object a) => Task.FromResult(a);
 
     public Task<T> GenericMethod<T>(T a, CancellationToken cancellationToken) => Task.FromResult(a);

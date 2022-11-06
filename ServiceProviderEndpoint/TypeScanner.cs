@@ -5,7 +5,7 @@ namespace ServiceProviderEndpoint;
 
 internal static class TypeScanner
 {
-    const BindingFlags _bindingAttr = BindingFlags.Public | BindingFlags.Instance;
+    public const BindingFlags Flags = BindingFlags.Public | BindingFlags.Instance;
 
     public static TypeMember? FindMember(this Type type, string name, Type[]? genericTypes, Type[]? argumentTypes, int argsCount, bool recursionless = false)
     {
@@ -13,13 +13,13 @@ internal static class TypeScanner
 
         if (!isGeneric && argsCount == 0)
         {
-            if (type.GetProperty(name, _bindingAttr) is PropertyInfo propertyInfo)
+            if (type.GetProperty(name, Flags) is PropertyInfo propertyInfo)
                 return new(propertyInfo);
-            else if (type.GetField(name, _bindingAttr) is FieldInfo fieldInfo)
+            else if (type.GetField(name, Flags) is FieldInfo fieldInfo)
                 return new(fieldInfo);
         }
 
-        var methods = type.GetMethods(_bindingAttr)
+        var methods = type.GetMethods(Flags)
             .Where(x => x.Name == name && x.IsGenericMethod == isGeneric);
 
         if (isGeneric)
@@ -78,10 +78,5 @@ internal static class TypeScanner
         return result;
     }
 
-    static bool IsAutoFillable(this Type type)
-    {
-        return type == typeof(Stream) || type == typeof(CancellationToken)
-            || (!type.IsAbstract && typeof(ISapiFile).IsAssignableFrom(type))
-            || (type.IsAbstract && typeof(ISapiFileReadOnly).IsAssignableFrom(type));
-    }
+    
 }
