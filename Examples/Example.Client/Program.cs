@@ -5,7 +5,14 @@ using ServiceProviderEndpoint.Client;
 
 // create client
 using var client = new SpeClient("https://localhost:7149/services");
-
+var r = 
+    await client.CreateRequest<IExampleService>()
+    .Member(x => x.SimpleProp, 888)
+    //.Member(x => x.GenericMethod("aaa", CancellationToken.None))
+    //.Member(x => x.SimpleMethod(11,22))
+    //.Member(x => x.VoidMethod())
+    //.Member(x => x.AsyncVoidMethod())
+    .Send();
 
 // ping request
 var result = await client.GetService<IMediator>().Send(new Ping { Message = "TEST" });

@@ -35,21 +35,31 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
         GC.SuppressFinalize(this);
     }
 
+    public ISpeRequestBuilder<TService> CreateRequest<TService>() => new SpeRequestBuilder<TService>(this);
+
     public object GetService(Type serviceType) => GetService(serviceType, CancellationToken.None);
 
     public object GetService(Type serviceType, CancellationToken cancellationToken)
     {
+        if (!serviceType.IsInterface)
+            throw new ArgumentException("For service types that are not interfaces, use method 'GetServiceUnsafe'.");
+
+        return GetService(serviceType, cancellationToken);
+    }
+
+    public object GetServiceUnsafe(Type serviceType, CancellationToken cancellationToken)
+    {
         return ProxyFactory.Create(serviceType, (method, args) =>
         {
             var returnAsTask = Types.Task.IsAssignableFrom(method.ReturnType);
-            
+
             var resultType = !returnAsTask ? method.ReturnType
                 : method.ReturnType.IsGenericType ? method.ReturnType.GetGenericArguments().First()
                 : Types.Void;
 
             var requestTask = CreateRequest(serviceType, method, args, cancellationToken);
             var resultTask = GetResult(requestTask, resultType, cancellationToken);
-            
+
             if (!returnAsTask)
                 return resultTask.ConfigureAwait(false).GetAwaiter().GetResult();
 
@@ -60,19 +70,19 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
         });
     }
 
-    protected virtual Task<HttpResponseMessage> CreateRequest(Type service, MethodInfo method, object?[] args, CancellationToken cancellationToken)
+    internal virtual Task<HttpResponseMessage> CreateRequest(Type service, MemberInfo member, object?[] args, CancellationToken cancellationToken)
     {
-        var requestArgs = ArgsBuilder.Build(method, args, out var streamables, out var cancellationTokens);
+        var requestArgs = ArgsBuilder.Build(member, args, out var streamables, out var cancellationTokens);
         var streamable = streamables.FirstOrDefault();
 
         if (cancellationTokens.Any())
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(new[] { cancellationToken }.Concat(cancellationTokens).Distinct().ToArray()).Token;
 
         if (streamable == null)
-            return _client.Value.PostAsJsonAsync(UriBuilder.Build(service, method, args), requestArgs, _settings.JsonSerializerOptions, cancellationToken);
+            return _client.Value.PostAsJsonAsync(UriBuilder.Build(service, member, args), requestArgs, _settings.JsonSerializerOptions, cancellationToken);
 
         var queryArgs = JsonSerializer.Serialize(requestArgs, _settings.JsonSerializerOptions);
-        var requestUri = UriBuilder.Build(service, method, args, queryArgs);
+        var requestUri = UriBuilder.Build(service, member, args, queryArgs);
 
         if (streamable is ISapiFileReadOnly file)
             return _client.Value.PostAsSapiFile(requestUri, file, _settings.JsonSerializerOptions, cancellationToken);
@@ -83,7 +93,7 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
         throw new InvalidDataException($"Unsupported streamable type {streamable.GetType()}");
     }
 
-    protected virtual async Task<object?> GetResult(Task<HttpResponseMessage> requestTask, Type resultType, CancellationToken cancellationToken)
+    internal virtual async Task<object?> GetResult(Task<HttpResponseMessage> requestTask, Type resultType, CancellationToken cancellationToken)
     {
         var response = await requestTask;
 
@@ -124,5 +134,4 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
 
         return client;
     }
-
 }

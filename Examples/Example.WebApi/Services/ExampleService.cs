@@ -6,11 +6,18 @@ public class ExampleService : IExampleService
 {
     public int SimpleField = 555;
 
-    public int SimpleProp => 777;
+    public int SimpleProp { get; set; } = 777;
 
     public int SimpleMethod(int a, int b = 10) => a * b;
 
-    public Task VoidMethod() => Task.CompletedTask;
+    public void VoidMethod() { 
+        SimpleProp += 1; 
+    }
+
+    public async Task AsyncVoidMethod() { 
+        SimpleProp += 1;
+        await Task.CompletedTask;
+    }
 
     public Task<object> CastMethod(object a) => Task.FromResult(a);
 
