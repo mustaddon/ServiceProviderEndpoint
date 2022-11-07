@@ -36,14 +36,23 @@ internal class ArgsBuilder
 
     private static void Add(Type parameterType, object? arg, List<object?> result, List<object> streamables, List<CancellationToken> cTockens)
     {
-        if (parameterType.IsAssignableFrom(Types.CancellationToken))
+        if (!parameterType.Equals(Types.Object))
         {
-            if (arg is CancellationToken cancellationToken)
-                cTockens.Add(cancellationToken);
+            if (parameterType.IsAssignableFrom(Types.CancellationToken))
+            {
+                if (arg is CancellationToken cancellationToken)
+                    cTockens.Add(cancellationToken);
+
+                return;
+            }
+
+            if (parameterType.IsStreamable())
+            {
+                streamables.Add(arg ?? Stream.Null);
+                return;
+            }
         }
-        else if (parameterType.IsStreamable())
-            streamables.Add(arg ?? Stream.Null);
-        else
-            result.Add(arg);
+
+        result.Add(arg);
     }
 }

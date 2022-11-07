@@ -45,17 +45,39 @@ internal static class TypeMemberExtensions
             var type = parameters[i].Type;
 
             if (type.Equals(Types.Stream))
+            {
                 result[i] = new SpeStream(ctx.Request);
-            else if (type.IsAssignableFrom(Types.CancellationToken))
-                result[i] = ctx.RequestAborted;
-            else if (type.IsAssignableFrom(Types.SapiFile))
-                result[i] = ctx.Request.ToSapiFile(Types.SapiFile, jsonOptions);
-            else if (!type.IsAbstract && Types.ISapiFile.IsAssignableFrom(type))
-                result[i] = ctx.Request.ToSapiFile(type, jsonOptions);
-            else if (argsIndex >= argsCount)
-                result[i] = parameters[i].DefaultValue;
-            else
+                continue;
+            }
+
+            if (!type.Equals(Types.Object))
+            {
+                if (type.IsAssignableFrom(Types.CancellationToken))
+                {
+                    result[i] = ctx.RequestAborted;
+                    continue;
+                }
+
+                if (type.IsAssignableFrom(Types.SapiFile))
+                {
+                    result[i] = ctx.Request.ToSapiFile(Types.SapiFile, jsonOptions);
+                    continue;
+                }
+
+                if (!type.IsAbstract && Types.ISapiFile.IsAssignableFrom(type))
+                {
+                    result[i] = ctx.Request.ToSapiFile(type, jsonOptions);
+                    continue;
+                }
+            }
+
+            if (argsIndex < argsCount)
+            {
                 result[i] = args![argsIndex++].Deserialize(type, jsonOptions);
+                continue;
+            }
+
+            result[i] = parameters[i].DefaultValue;
         }
 
         return result;

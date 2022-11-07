@@ -11,7 +11,7 @@ public interface IExampleService
     int SimpleMethod(int a, int b = 10);
     void VoidMethod();
     Task AsyncVoidMethod();
-    Task<object> CastMethod(object a);
+    Task<object?> CastMethod(object? a);
     Task<T> GenericMethod<T>(T a, CancellationToken cancellationToken = default);
     Task<string> UploadStreamMethod(Stream stream, string? name = null, CancellationToken cancellationToken = default);
     Task<Stream> DownloadStreamMethod(string? name = null);

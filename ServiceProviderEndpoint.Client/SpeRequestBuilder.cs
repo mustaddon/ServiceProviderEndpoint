@@ -47,8 +47,7 @@ internal class SpeRequestBuilder<TService> : ISpeRequestBuilder<TService>
     }
 }
 
-internal class SpeMemberRequestBuilder<TService, TResult>
-    : ISpeMemberRequestBuilder<TService, TResult>, ISpeMemberRequestBuilder<TService>
+internal class SpeMemberRequestBuilder<TService, TResult> : ISpeMemberRequestBuilder<TService, TResult>, ISpeMemberRequestBuilder<TService>
 {
     public SpeMemberRequestBuilder(SpeClient client, LambdaExpression expression, Func<object?>? newValue = null)
     {
@@ -60,6 +59,8 @@ internal class SpeMemberRequestBuilder<TService, TResult>
     private readonly SpeClient _client;
     private readonly LambdaExpression _expression;
     private readonly Func<object?>? _newValue;
+    private Type?[]? _parameters;
+    private Type? _returnType;
 
     Task ISpeMemberRequestBuilder<TService>.Send(CancellationToken cancellationToken) => Send(cancellationToken);
 
@@ -82,8 +83,8 @@ internal class SpeMemberRequestBuilder<TService, TResult>
         if (member == null || args == null)
             throw new InvalidOperationException("Failed to build a query for this member expression");
 
-        var requestTask = _client.CreateRequest(typeof(TService), member, args, cancellationToken);
-        var resultTask = _client.GetResult(requestTask, typeof(TResult), cancellationToken);
+        var requestTask = _client.CreateRequest(typeof(TService), member, _parameters, args, cancellationToken);
+        var resultTask = _client.GetResult(requestTask, _returnType ?? typeof(TResult), cancellationToken);
 
         return (TResult?)(await resultTask);
     }
@@ -95,5 +96,26 @@ internal class SpeMemberRequestBuilder<TService, TResult>
 
         return Expression.Lambda(Expression.Convert(element, element.Type))
             .Compile().DynamicInvoke();
+    }
+
+
+    ISpeMemberRequestBuilder<TService> ISpeMemberRequestBuilder<TService>.Parameters(params Type?[] types)
+    {
+        _parameters = types; return this;
+    }
+
+    public ISpeMemberRequestBuilder<TService, TResult> Parameters(params Type?[] types)
+    {
+        _parameters = types; return this;
+    }
+
+    public ISpeMemberRequestBuilder<TService> ReturnType(Type type)
+    {
+        _returnType = type; return this;
+    }
+
+    ISpeMemberRequestBuilder<TService, TResult> ISpeMemberRequestBuilder<TService, TResult>.ReturnType(Type type)
+    {
+        _returnType = type; return this;
     }
 }

@@ -87,6 +87,11 @@ class EndpointProcessor
     {
         var value = await valueTask;
 
+        if (value == null)
+            return Results.NoContent();
+
+        ctx.Response.Headers["spe-result-type"] = value.GetType().Serialize();
+
         if (value is IResult result)
             return result;
 

@@ -19,7 +19,7 @@ public class ExampleService : IExampleService
         await Task.CompletedTask;
     }
 
-    public Task<object> CastMethod(object a) => Task.FromResult(a);
+    public Task<object?> CastMethod(object? a) => Task.FromResult(a);
 
     public Task<T> GenericMethod<T>(T a, CancellationToken cancellationToken) => Task.FromResult(a);
 

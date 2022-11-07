@@ -3,6 +3,7 @@ using SingleApi;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -57,7 +58,7 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
                 : method.ReturnType.IsGenericType ? method.ReturnType.GetGenericArguments().First()
                 : Types.Void;
 
-            var requestTask = CreateRequest(serviceType, method, args, cancellationToken);
+            var requestTask = CreateRequest(serviceType, method, null, args, cancellationToken);
             var resultTask = GetResult(requestTask, resultType, cancellationToken);
 
             if (!returnAsTask)
@@ -70,7 +71,7 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
         });
     }
 
-    internal virtual Task<HttpResponseMessage> CreateRequest(Type service, MemberInfo member, object?[] args, CancellationToken cancellationToken)
+    internal virtual Task<HttpResponseMessage> CreateRequest(Type service, MemberInfo member, Type?[]? parameters, object?[] args, CancellationToken cancellationToken)
     {
         var requestArgs = ArgsBuilder.Build(member, args, out var streamables, out var cancellationTokens);
         var streamable = streamables.FirstOrDefault();
@@ -79,10 +80,10 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
             cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(new[] { cancellationToken }.Concat(cancellationTokens).Distinct().ToArray()).Token;
 
         if (streamable == null)
-            return _client.Value.PostAsJsonAsync(UriBuilder.Build(service, member, args), requestArgs, _settings.JsonSerializerOptions, cancellationToken);
+            return _client.Value.PostAsJsonAsync(UriBuilder.Build(service, member, parameters, args), requestArgs, _settings.JsonSerializerOptions, cancellationToken);
 
         var queryArgs = JsonSerializer.Serialize(requestArgs, _settings.JsonSerializerOptions);
-        var requestUri = UriBuilder.Build(service, member, args, queryArgs);
+        var requestUri = UriBuilder.Build(service, member, parameters, args, queryArgs);
 
         if (streamable is ISapiFileReadOnly file)
             return _client.Value.PostAsSapiFile(requestUri, file, _settings.JsonSerializerOptions, cancellationToken);
@@ -99,17 +100,20 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
 
         response.EnsureSuccessStatusCodeDisposable();
 
-        if (resultType.Equals(Types.Void))
+        if (response.StatusCode == HttpStatusCode.NoContent || resultType.Equals(Types.Void))
             return null;
 
         if (resultType.Equals(Types.Stream))
             return new SpeStreamWrapper(await response.Content.ReadAsStreamAsync(cancellationToken), () => response.Dispose());
 
-        if (resultType.IsAssignableFrom(Types.SapiFile))
-            return await response.ToSapiFile(Types.SapiFile, _settings.JsonSerializerOptions, cancellationToken);
+        if (!resultType.Equals(Types.Object))
+        {
+            if (resultType.IsAssignableFrom(Types.SapiFile))
+                return await response.ToSapiFile(Types.SapiFile, _settings.JsonSerializerOptions, cancellationToken);
 
-        if (!resultType.IsAbstract && Types.ISapiFile.IsAssignableFrom(resultType))
-            return await response.ToSapiFile(resultType, _settings.JsonSerializerOptions, cancellationToken);
+            if (!resultType.IsAbstract && Types.ISapiFile.IsAssignableFrom(resultType))
+                return await response.ToSapiFile(resultType, _settings.JsonSerializerOptions, cancellationToken);
+        }
 
         using (response)
         {

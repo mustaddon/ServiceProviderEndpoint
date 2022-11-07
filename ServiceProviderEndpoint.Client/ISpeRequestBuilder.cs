@@ -15,13 +15,16 @@ public interface ISpeRequestBuilder<TService>
     ISpeMemberRequestBuilder<TService, TValue> Member<TValue>(Expression<Func<TService, TValue>> expression, TValue newValue);
 }
 
-
-public interface ISpeMemberRequestBuilder<TService> 
+public interface ISpeMemberRequestBuilder<TService>
 {
+    ISpeMemberRequestBuilder<TService> Parameters(params Type?[] types);
+    ISpeMemberRequestBuilder<TService> ReturnType(Type type);
     Task Send(CancellationToken cancellationToken = default);
 }
 
 public interface ISpeMemberRequestBuilder<TService, TResult>
 {
+    ISpeMemberRequestBuilder<TService, TResult> Parameters(params Type?[] types);
+    ISpeMemberRequestBuilder<TService, TResult> ReturnType(Type type);
     Task<TResult?> Send(CancellationToken cancellationToken = default);
 }

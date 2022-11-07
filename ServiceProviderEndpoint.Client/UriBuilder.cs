@@ -7,16 +7,16 @@ namespace ServiceProviderEndpoint.Client
 {
     internal class UriBuilder
     {
-        public static string Build(Type service, MemberInfo member, object?[] args, string? queryArgs = null)
+        public static string Build(Type service, MemberInfo member, Type?[]? parameters, object?[] args, string? queryArgs = null)
         {
             var paths = new List<string> {
                 service.Serialize()
             };
 
             if (member is MethodInfo method)
-                AddMethod(paths, method, args);
+                AddMethod(paths, method, parameters, args);
             else
-                AddProperty(paths, member, args);
+                AddProperty(paths, member, parameters, args);
 
             if (queryArgs != null)
                 paths.Add($"?args={Uri.EscapeDataString(queryArgs)}");
@@ -24,12 +24,18 @@ namespace ServiceProviderEndpoint.Client
             return string.Join("/", paths);
         }
 
-        private static void AddProperty(List<string> paths, MemberInfo member, object?[] args)
+        private static void AddProperty(List<string> paths, MemberInfo member, Type?[]? parameters, object?[] args)
         {
             paths.Add(member.Name);
 
             if (args.Length == 0)
                 return;
+
+            if (parameters != null && parameters.Length > 0 && parameters[0] != null)
+            {
+                paths.Add(parameters[0]!.Serialize());
+                return;
+            }
 
             var argumentType = args[0]?.GetType();
 
@@ -39,17 +45,24 @@ namespace ServiceProviderEndpoint.Client
                 paths.Add(ChooseParameterType(field.FieldType, argumentType).Serialize());
         }
 
-        private static void AddMethod(List<string> paths, MethodInfo method, object?[] args)
+        private static void AddMethod(List<string> paths, MethodInfo method, Type?[]? parameters, object?[] args)
         {
             paths.Add(!method.IsGenericMethod ? method.Name
                     : $"{method.Name}({method.GetGenericArguments().Serialize()})");
 
-            var parameters = method.GetParameters();
-            var parameterTypes = new Type[parameters.Length];
+            var parameterInfos = method.GetParameters();
+            var parameterTypes = new Type[parameterInfos.Length];
+            var parametersLength = parameters?.Length ?? 0;
 
-            for (var i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameterInfos.Length; i++)
             {
-                var parameterType = parameters[i].ParameterType;
+                if (parametersLength > i && parameters![i] != null)
+                {
+                    parameterTypes[i] = parameters[i]!;
+                    continue;
+                }
+
+                var parameterType = parameterInfos[i].ParameterType;
                 var argumentType = args.Length > i ? args[i]?.GetType() : null;
                 parameterTypes[i] = ChooseParameterType(parameterType, argumentType);
             }
