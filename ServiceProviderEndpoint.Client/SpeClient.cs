@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ServiceProviderEndpoint.Client;
 
-public class SpeClient : ISpeClient, IServiceProvider, IDisposable
+public class SpeClient : ISpeClient, IDisposable
 {
     public SpeClient(string address, SpeClientSettings? settings = null)
     {
@@ -43,7 +43,7 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
     public object GetService(Type serviceType, CancellationToken cancellationToken)
     {
         if (!serviceType.IsInterface)
-            throw new ArgumentException("For service types that are not interfaces, use method 'GetServiceUnsafe'.");
+            throw new ArgumentException("For service types that are not interfaces, use 'GetServiceUnsafe' method.");
 
         return GetService(serviceType, cancellationToken);
     }
@@ -102,6 +102,9 @@ public class SpeClient : ISpeClient, IServiceProvider, IDisposable
 
         if (response.StatusCode == HttpStatusCode.NoContent || resultType.Equals(Types.Void))
             return null;
+
+        if(resultType.Equals(Types.Object) && response.Headers.TryGetValues("spe-result-type", out var resultTypeHeaders))
+            resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First());
 
         if (resultType.Equals(Types.Stream))
             return new SpeStreamWrapper(await response.Content.ReadAsStreamAsync(cancellationToken), () => response.Dispose());

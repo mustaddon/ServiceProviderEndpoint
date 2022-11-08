@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using TypeSerialization;
 
 namespace ServiceProviderEndpoint;
 
@@ -6,7 +7,7 @@ internal static class HttpExtensions
 {
     public static bool IsJson(this HttpRequest value)
     {
-        return value.ContentType?.Contains("/json", StringComparison.InvariantCultureIgnoreCase) == true;
+        return value.ContentType?.StartsWith("application/json", StringComparison.InvariantCultureIgnoreCase) == true;
     }
 
     public static IHeaderDictionary AddNoCache(this IHeaderDictionary headers)

@@ -13,24 +13,14 @@ class EndpointProcessor
     public EndpointProcessor(IEnumerable<ServiceDescriptor> services, IEnumerable<Type> types, SpeOptions options)
     {
         _options = options;
-        _typeDeserializer = new TypeDeserializer(services
-            .SelectMany(x => new[] { x.ServiceType }
-                .Concat(x.ServiceType.GetFields(TypeScanner.Flags)
-                    .Select(x => x.FieldType))
-                .Concat(x.ServiceType.GetProperties(TypeScanner.Flags)
-                    .Select(x => x.PropertyType))
-                .Concat(x.ServiceType.GetMethods(TypeScanner.Flags)
-                    .SelectMany(x => x.GetParameters())
-                    .Select(x => x.ParameterType))
-                .Where(x => !x.IsGenericParameter))
-            .Concat(types)
-            .Concat(typeof(SapiFile).Assembly.GetTypes().Where(x => x.IsPublic && !x.IsStaticOrAttribute()))
-            .Concat(new[] { typeof(Stream) }));
+        _typeDeserializer = TypeDeserializers.Create(services, types);
+        _serviceTypes = new(services.Select(x => x.ServiceType));
     }
 
     readonly SpeOptions _options;
     readonly TypeDeserializer _typeDeserializer;
     readonly ConcurrentDictionary<string, TypeMember> _typeMembers = new();
+    readonly HashSet<Type> _serviceTypes;
 
     public Task<IResult> ProcessGet(HttpContext ctx, string service, string member, string? parameters, string? args)
     {
@@ -53,7 +43,7 @@ class EndpointProcessor
     Task<IResult> Process(HttpContext ctx, string serviceType, string memberName, string? argumentTypes, JsonArray? args)
     {
         var serviceTypeObj = _typeDeserializer.Deserialize(serviceType);
-        var service = ctx.RequestServices.GetRequiredService(serviceTypeObj);
+        var service = GetService(ctx, serviceTypeObj) ?? throw new InvalidOperationException($"Service '{serviceTypeObj}' not found.");
         var memberKey = string.Join("|", serviceType, memberName, argumentTypes, args?.Count);
 
         if (!_typeMembers.TryGetValue(memberKey, out var typeMember))
@@ -61,12 +51,21 @@ class EndpointProcessor
             var argumentTypesObj = argumentTypes == null ? null : _typeDeserializer.DeserializeMany(argumentTypes);
             var memberGenericTypes = ExtractGenericTypes(ref memberName);
             typeMember = serviceTypeObj.FindMember(memberName, memberGenericTypes, argumentTypesObj, args?.Count ?? 0)
-                ?? throw new Exception($"Member '{memberName}'{memberGenericTypes?.Length} not found.");
+                ?? throw new InvalidOperationException($"Member '{memberName}'{memberGenericTypes?.Length} not found.");
 
             _typeMembers.TryAdd(memberKey, typeMember);
         }
 
         return GetResult(ctx, typeMember.GetValue(service, ctx, args, _options.JsonSerialization));
+    }
+
+    object? GetService(HttpContext ctx, Type type)
+    {
+        if (!_serviceTypes.Contains(type) && (!type.IsGenericType
+            || !_serviceTypes.Contains(type.GetGenericTypeDefinition())))
+            return null;
+
+        return ctx.RequestServices.GetService(type);
     }
 
     Type[]? ExtractGenericTypes(ref string memberName)

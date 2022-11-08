@@ -23,7 +23,8 @@ public static class ServiceProviderEndpointExtensions
     public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, IEnumerable<Assembly> additionalAssemblies, Action<SpeOptions>? optionsConfigurator = null)
     {
         return builder.MapServiceProvider(route, serviceDescriptors,
-            additionalAssemblies.SelectMany(x => x.GetTypes()).Where(x => x.IsPublic && !x.IsStaticOrAttribute()),
+            additionalAssemblies.SelectMany(x => x.GetTypes())
+                .Where(x => x.IsPublic && !x.IsStatic() && !Types.Attribute.IsAssignableFrom(x)),
             optionsConfigurator);
     }
 
