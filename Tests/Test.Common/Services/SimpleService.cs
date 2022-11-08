@@ -16,6 +16,7 @@ public class SimpleService : ISimpleService
     public string? PropRef { get; set; }
     public object? PropObj { get; set; }
 
+
     public Task<object?> AsyncCastMethod(object? a, int b = 222)
     {
         throw new NotImplementedException();

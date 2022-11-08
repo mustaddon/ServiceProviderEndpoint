@@ -1,6 +1,4 @@
-﻿
-
-namespace Test.Client;
+﻿namespace Test.Client;
 
 public partial class Test : IDisposable
 {
