@@ -31,7 +31,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
 		<PackageReference Include="DispatchProxyAdvanced" Version="1.0.0" />
-		<PackageReference Include="TypeSerialization" Version="1.0.2" />
+		<PackageReference Include="TypeSerialization" Version="1.0.3" />
 		<PackageReference Include="SingleApi.Contracts" Version="1.0.1" />
 	</ItemGroup>
 

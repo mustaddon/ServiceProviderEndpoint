@@ -40,18 +40,18 @@ class EndpointProcessor
         return await Process(ctx, service, member, parameters, argsObj);
     }
 
-    Task<IResult> Process(HttpContext ctx, string serviceType, string memberName, string? argumentTypes, JsonArray? args)
+    Task<IResult> Process(HttpContext ctx, string serviceName, string memberName, string? paramererNames, JsonArray? args)
     {
-        var serviceTypeObj = _typeDeserializer.Deserialize(serviceType);
+        var serviceTypeObj = _typeDeserializer.Deserialize(serviceName);
         var service = GetService(ctx, serviceTypeObj) ?? throw new InvalidOperationException($"Service '{serviceTypeObj}' not found.");
-        var memberKey = string.Join("|", serviceType, memberName, argumentTypes, args?.Count);
+        var memberKey = string.Join("|", serviceName, memberName, paramererNames, args?.Count);
 
         if (!_typeMembers.TryGetValue(memberKey, out var typeMember))
         {
-            var argumentTypesObj = argumentTypes == null ? null : _typeDeserializer.DeserializeMany(argumentTypes);
-            var memberGenericTypes = ExtractGenericTypes(ref memberName);
-            typeMember = serviceTypeObj.FindMember(memberName, memberGenericTypes, argumentTypesObj, args?.Count ?? 0)
-                ?? throw new InvalidOperationException($"Member '{memberName}'{memberGenericTypes?.Length} not found.");
+            var parameters = paramererNames == null ? null : _typeDeserializer.DeserializeMany(paramererNames);
+            var memberGenericArgs = ExtractGenericTypes(ref memberName);
+            typeMember = serviceTypeObj.FindMember(memberName, memberGenericArgs, parameters, args?.Count ?? 0)
+                ?? throw new InvalidOperationException($"Member '{memberName}'{memberGenericArgs?.Length} not found.");
 
             _typeMembers.TryAdd(memberKey, typeMember);
         }

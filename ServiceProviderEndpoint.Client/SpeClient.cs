@@ -36,7 +36,7 @@ public class SpeClient : ISpeClient, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public ISpeRequestBuilder<TService> CreateRequest<TService>() => new SpeRequestBuilder<TService>(this);
+    public ISpeServiceRequest<TService> CreateRequest<TService>() => new SpeServiceRequest<TService>(this);
 
     public object GetService(Type serviceType) => GetService(serviceType, CancellationToken.None);
 

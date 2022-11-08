@@ -5,7 +5,7 @@ namespace ServiceProviderEndpoint.Client;
 
 public interface ISpeClient : IServiceProvider
 {
-    ISpeRequestBuilder<TService> CreateRequest<TService>();
+    ISpeServiceRequest<TService> CreateRequest<TService>();
     object GetService(Type serviceType, CancellationToken cancellationToken);
     object GetServiceUnsafe(Type serviceType, CancellationToken cancellationToken = default);
 }

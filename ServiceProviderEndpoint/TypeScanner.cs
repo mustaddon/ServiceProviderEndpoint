@@ -1,5 +1,4 @@
-﻿using SingleApi;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ServiceProviderEndpoint;
 
@@ -7,16 +6,16 @@ internal static class TypeScanner
 {
     public const BindingFlags Flags = BindingFlags.Public | BindingFlags.Instance;
 
-    public static TypeMember? FindMember(this Type type, string name, Type[]? genericTypes, Type[]? argumentTypes, int argsCount, bool recursionless = false)
+    public static TypeMember? FindMember(this Type type, string name, Type[]? genericArgs, Type[]? argumentTypes, int argsCount, bool recursionless = false)
     {
-        var isGeneric = genericTypes != null;
+        var isGeneric = genericArgs != null;
 
-        if (!isGeneric && argsCount == 0)
+        if (!isGeneric)
         {
             if (type.GetProperty(name, Flags) is PropertyInfo propertyInfo)
-                return new(propertyInfo);
+                return new(propertyInfo, propertyInfo.PropertyType.ApplyArgumentType(argumentTypes));
             else if (type.GetField(name, Flags) is FieldInfo fieldInfo)
-                return new(fieldInfo);
+                return new(fieldInfo, fieldInfo.FieldType.ApplyArgumentType(argumentTypes));
         }
 
         var methods = type.GetMethods(Flags)
@@ -24,8 +23,8 @@ internal static class TypeScanner
 
         if (isGeneric)
             methods = methods
-                .Where(x => x.GetGenericArguments().Length == genericTypes!.Length)
-                .Select(x => x.MakeGenericMethod(genericTypes!));
+                .Where(x => x.GetGenericArguments().Length == genericArgs!.Length)
+                .Select(x => x.MakeGenericMethod(genericArgs!));
 
         var extendedMethods = methods
             .Select(x =>
@@ -49,7 +48,7 @@ internal static class TypeScanner
 
         if (type.IsInterface && !recursionless)
             return type.GetInterfaces()
-                .Select(x => x.FindMember(name, genericTypes, argumentTypes, argsCount, true))
+                .Select(x => x.FindMember(name, genericArgs, argumentTypes, argsCount, true))
                 .FirstOrDefault(x => x != null);
 
         return null;
@@ -70,13 +69,18 @@ internal static class TypeScanner
     static TypeMemberParameter[] ApplyArgumentTypes(this ParameterInfo[] parameters, Type[]? arguments)
     {
         var result = new TypeMemberParameter[parameters.Length];
+        var argumentsLength = arguments?.Length ?? 0;
 
         for (var i = 0; i < parameters.Length; i++)
-            result[i] = new(arguments?.Length > i ? arguments[i] : parameters[i].ParameterType,
+            result[i] = new(argumentsLength > i ? arguments![i] : parameters[i].ParameterType,
                 DefaultValue: parameters[i].DefaultValue);
 
         return result;
     }
 
-    
+    static TypeMemberParameter[] ApplyArgumentType(this Type type, Type[]? arguments)
+    {
+        return new[] { new TypeMemberParameter(arguments?.Length > 0 ? arguments[0] : type) };
+    }
+
 }

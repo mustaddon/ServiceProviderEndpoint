@@ -6,8 +6,8 @@ using System.Text.Json.Nodes;
 namespace ServiceProviderEndpoint;
 
 
-internal record TypeMember(MemberInfo Info, TypeMemberParameter[]? Parameters = null);
-internal record TypeMemberParameter(Type Type, object? DefaultValue);
+internal record TypeMember(MemberInfo Info, TypeMemberParameter[]? Parameters);
+internal record TypeMemberParameter(Type Type, object? DefaultValue = null);
 
 
 internal static class TypeMemberExtensions
@@ -17,11 +17,23 @@ internal static class TypeMemberExtensions
         object? result = null;
 
         if (member.Info is MethodInfo methodInfo)
+        {
             result = methodInfo.Invoke(obj, member.Parameters!.GetArguments(ctx, args, jsonOptions));
+        }
         else if (member.Info is PropertyInfo propertyInfo)
-            result = propertyInfo.GetValue(obj);
+        {
+            if (args?.Any() == true)
+                propertyInfo.SetValue(obj, member.Parameters!.GetArguments(ctx, args, jsonOptions)[0]);
+            else
+                result = propertyInfo.GetValue(obj);
+        }
         else if (member.Info is FieldInfo fieldInfo)
-            result = fieldInfo.GetValue(obj);
+        {
+            if (args?.Any() == true)
+                fieldInfo.SetValue(obj, member.Parameters!.GetArguments(ctx, args, jsonOptions)[0]);
+            else
+                result = fieldInfo.GetValue(obj);
+        }
 
         if (result is ValueTask valueTask)
             result = valueTask.AsTask();

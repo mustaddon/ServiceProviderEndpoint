@@ -5,26 +5,25 @@ using System.Threading.Tasks;
 
 namespace ServiceProviderEndpoint.Client;
 
-public interface ISpeRequestBuilder<TService>
+public interface ISpeServiceRequest<TService>
 {
-    ISpeMemberRequestBuilder<TService> Member(Expression<Action<TService>> expression);
-    ISpeMemberRequestBuilder<TService> Member(Expression<Func<TService, Task>> expression);
-    ISpeMemberRequestBuilder<TService, TResult> Member<TResult>(Expression<Func<TService, Task<TResult>>> expression);
-    ISpeMemberRequestBuilder<TService, TResult> Member<TResult>(Expression<Func<TService, TResult>> expression);
-    ISpeMemberRequestBuilder<TService, TValue> Member<TValue>(Expression<Func<TService, Task<TValue>>> expression, TValue newValue);
-    ISpeMemberRequestBuilder<TService, TValue> Member<TValue>(Expression<Func<TService, TValue>> expression, TValue newValue);
+    ISpeMemberRequest<TService> Member(Expression<Action<TService>> expression);
+    ISpeMemberRequest<TService> Member(Expression<Func<TService, Task>> expression);
+    ISpeMemberRequest<TService, TResult> Member<TResult>(Expression<Func<TService, Task<TResult>>> expression);
+    ISpeMemberRequest<TService, TResult> Member<TResult>(Expression<Func<TService, TResult>> expression);
+    ISpeMemberRequest<TService> Member<TValue>(Expression<Func<TService, Task<TValue>>> expression, TValue newValue);
+    ISpeMemberRequest<TService> Member<TValue>(Expression<Func<TService, TValue>> expression, TValue newValue);
 }
 
-public interface ISpeMemberRequestBuilder<TService>
+public interface ISpeMemberRequest<TService>
 {
-    ISpeMemberRequestBuilder<TService> Parameters(params Type?[] types);
-    ISpeMemberRequestBuilder<TService> ReturnType(Type type);
+    ISpeMemberRequest<TService> Parameters(params Type?[] types);
     Task Send(CancellationToken cancellationToken = default);
 }
 
-public interface ISpeMemberRequestBuilder<TService, TResult>
+public interface ISpeMemberRequest<TService, TResult>
 {
-    ISpeMemberRequestBuilder<TService, TResult> Parameters(params Type?[] types);
-    ISpeMemberRequestBuilder<TService, TResult> ReturnType(Type type);
+    ISpeMemberRequest<TService, TResult> Parameters(params Type?[] types);
+    ISpeMemberRequest<TService, TResult> ReturnType(Type type);
     Task<TResult?> Send(CancellationToken cancellationToken = default);
 }
