@@ -45,7 +45,7 @@ public class SpeClient : ISpeClient, IDisposable
         if (!serviceType.IsInterface)
             throw new ArgumentException("For service types that are not interfaces, use 'GetServiceUnsafe' method.");
 
-        return GetService(serviceType, cancellationToken);
+        return GetServiceUnsafe(serviceType, cancellationToken);
     }
 
     public object GetServiceUnsafe(Type serviceType, CancellationToken cancellationToken)
