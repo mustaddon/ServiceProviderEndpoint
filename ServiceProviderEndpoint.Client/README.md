@@ -1,5 +1,4 @@
 # ServiceProviderEndpoint Client [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.Client.svg)](http://badge.fury.io/nu/ServiceProviderEndpoint.Client)
-ServiceProviderEndpoint Client
 
 
 ## Example: Usage
