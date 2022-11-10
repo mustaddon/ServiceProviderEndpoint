@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using TypeSerialization;
 
 namespace ServiceProviderEndpoint.Client;
 
@@ -51,6 +52,12 @@ internal class ArgsBuilder
                 streamables.Add(arg ?? Stream.Null);
                 return;
             }
+        }
+
+        if (arg is Type type)
+        {
+            result.Add(type.Serialize());
+            return;
         }
 
         result.Add(arg);

@@ -18,7 +18,7 @@ namespace Test
 
         public static readonly Dictionary<string, IEnumerable<string>> Headers = new()
         {
-            { "sapi-test", new [] { "value" } }
+            { "spe-test", new [] { "value" } }
         };
     }
 }

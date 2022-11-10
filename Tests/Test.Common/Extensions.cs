@@ -7,7 +7,9 @@ namespace Test
     {
         public static string ToText(this Stream stream)
         {
-            using (stream)
+            if (stream.Position != 0)
+                stream.Position = 0;
+
             using (var ms = new MemoryStream())
             {
                 stream.CopyTo(ms);

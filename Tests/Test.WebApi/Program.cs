@@ -8,7 +8,7 @@ using Test.WebApi.Handlers;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<SimpleService>();
-builder.Services.AddSingleton<ISimpleService, SimpleService>();
+builder.Services.AddSingleton<ISimpleService>(x => x.GetRequiredService<SimpleService>());
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddTransient<IRequestHandler<FileUpload<FileMetadata>, FileUploadResult<FileMetadata>>, FileUploadHandler<FileMetadata>>();

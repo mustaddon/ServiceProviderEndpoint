@@ -1,18 +1,18 @@
 ﻿using MediatR;
-using SingleApi;
+using MetaFile;
 using System.Text;
 using Test.Requests;
 
 namespace Test.WebApi.Handlers
 {
-    public class FileHandler : IRequestHandler<FileRequest, SapiFile<FileMetadata>>
+    public class FileHandler : IRequestHandler<FileRequest, HttpFile<FileMetadata>>
     {
-        public async Task<SapiFile<FileMetadata>> Handle(FileRequest request, CancellationToken cancellationToken)
+        public async Task<HttpFile<FileMetadata>> Handle(FileRequest request, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
             if (string.IsNullOrEmpty(request.Name))
-                return new ()
+                return new()
                 {
                     Content = new MemoryStream(Encoding.UTF8.GetBytes(TestData.FileContent)),
                     Name = TestData.FileName,

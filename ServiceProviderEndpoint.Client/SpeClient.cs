@@ -1,5 +1,6 @@
 ﻿using DispatchProxyAdvanced;
-using SingleApi;
+using MetaFile;
+using MetaFile.Http;
 using System;
 using System.IO;
 using System.Linq;
@@ -85,8 +86,8 @@ public class SpeClient : ISpeClient, IDisposable
         var queryArgs = JsonSerializer.Serialize(requestArgs, _settings.JsonSerializerOptions);
         var requestUri = UriBuilder.Build(service, member, parameters, args, queryArgs);
 
-        if (streamable is ISapiFileReadOnly file)
-            return _client.Value.PostAsSapiFile(requestUri, file, _settings.JsonSerializerOptions, cancellationToken);
+        if (streamable is IStreamFileReadOnly file)
+            return _client.Value.PostAsStreamFile(requestUri, file, _settings.JsonSerializerOptions, cancellationToken);
 
         if (streamable is Stream stream)
             return _client.Value.PostAsync(requestUri, new StreamContent(stream), cancellationToken);
@@ -103,7 +104,7 @@ public class SpeClient : ISpeClient, IDisposable
         if (response.StatusCode == HttpStatusCode.NoContent || resultType.Equals(Types.Void))
             return null;
 
-        if(resultType.Equals(Types.Object) && response.Headers.TryGetValues("spe-result-type", out var resultTypeHeaders))
+        if (resultType.Equals(Types.Object) && response.Headers.TryGetValues("spe-result-type", out var resultTypeHeaders))
             resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First());
 
         if (resultType.Equals(Types.Stream))
@@ -111,15 +112,21 @@ public class SpeClient : ISpeClient, IDisposable
 
         if (!resultType.Equals(Types.Object))
         {
-            if (resultType.IsAssignableFrom(Types.SapiFile))
-                return await response.ToSapiFile(Types.SapiFile, _settings.JsonSerializerOptions, cancellationToken);
+            if (resultType.IsAssignableFrom(Types.StreamFile))
+                return await response.ReadAsStreamFile(Types.StreamFile, _settings.JsonSerializerOptions, cancellationToken);
 
-            if (!resultType.IsAbstract && Types.ISapiFile.IsAssignableFrom(resultType))
-                return await response.ToSapiFile(resultType, _settings.JsonSerializerOptions, cancellationToken);
+            if (!resultType.IsAbstract && Types.IStreamFile.IsAssignableFrom(resultType))
+                return await response.ReadAsStreamFile(resultType, _settings.JsonSerializerOptions, cancellationToken);
         }
 
         using (response)
         {
+            if (resultType.Equals(Types.Type))
+            {
+                var typeStr = await response.Content.ReadFromJsonAsync<string>(_settings.JsonSerializerOptions, cancellationToken);
+                return typeStr == null ? null : _settings.TypeDeserializer.Deserialize(typeStr);
+            }
+
             return await response.Content.ReadFromJsonAsync(resultType, _settings.JsonSerializerOptions, cancellationToken);
         }
     }

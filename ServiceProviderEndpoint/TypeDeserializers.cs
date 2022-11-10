@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using SingleApi;
+﻿using MetaFile;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using TypeSerialization;
 
@@ -21,7 +21,7 @@ internal static class TypeDeserializers
                 .Where(x => !x.IsGenericParameter))
             .Concat(types.Where(x => !x.IsStatic()))
             .Concat(SystemTypes)
-            .Concat(SapiTypes));
+            .Concat(MetaFileTypes));
     }
 
     static readonly IEnumerable<Type> SystemTypes = Array.Empty<Type>()
@@ -30,9 +30,9 @@ internal static class TypeDeserializers
         .Where(x => x.IsPublic && !x.IsAbstract && !x.IsEnum)
         .Where(x => !Types.Attribute.IsAssignableFrom(x))
         .Where(x => !Types.Exception.IsAssignableFrom(x))
-        .Concat(new[] { typeof(object), typeof(Stream), typeof(CancellationToken) });
+        .Concat(new[] { typeof(object), typeof(int?), typeof(Type), typeof(Stream), typeof(CancellationToken) });
 
-    static readonly IEnumerable<Type> SapiTypes = typeof(SapiFile).Assembly.GetTypes()
+    static readonly IEnumerable<Type> MetaFileTypes = typeof(StreamFile).Assembly.GetTypes()
         .Where(x => x.IsPublic && !x.IsStatic())
         .Where(x => !Types.Attribute.IsAssignableFrom(x))
         .Where(x => !Types.Exception.IsAssignableFrom(x));

@@ -81,6 +81,9 @@ namespace ServiceProviderEndpoint.Client
             if (parameterType.IsStreamable())
                 return parameterType;
 
+            if (Types.Type.IsAssignableFrom(argumentType))
+                return Types.Type;
+
             return argumentType;
         }
     }

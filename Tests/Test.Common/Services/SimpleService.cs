@@ -1,7 +1,6 @@
-﻿using System;
+﻿using MetaFile;
+using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Test.Services;
 
@@ -17,43 +16,32 @@ public class SimpleService : ISimpleService
     public object? PropObj { get; set; }
 
 
-    public Task<object?> AsyncCastMethod(object? a, int b = 222)
-    {
-        throw new NotImplementedException();
-    }
+    public void MethodVoid() => FieldVal++;
+    public int MethodVal(int a, int? b) => a + (b ?? 0);
+    public string? MethodRef(string? a) => a;
+    public object? MethodObj(object? a) => a;
+    public Type? MethodType(Type? a) => a;
 
-    public Task<int> AsyncMethod(int a, int b)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task AsyncVoidMethod(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public object MethodObj(object a)
-    {
-        throw new NotImplementedException();
-    }
-
-    public string MethodRef(string a)
-    {
-        throw new NotImplementedException();
-    }
 
     public Stream MethodStream(Stream a)
     {
-        throw new NotImplementedException();
+        var ms = new MemoryStream();
+        a.CopyToAsync(ms).Wait();
+        ms.Position = 0;
+        return ms;
     }
 
-    public int MethodVal(int a, int? b)
+    public IStreamFile MethodFileStream(IStreamFile a)
     {
-        throw new NotImplementedException();
-    }
+        var ms = new MemoryStream();
+        a.Content.CopyToAsync(ms).Wait();
+        ms.Position = 0;
 
-    public void MethodVoid()
-    {
-        throw new NotImplementedException();
+        return new StreamFile
+        {
+            Content = ms,
+            Name = a.Name,
+            Type = a.Type,
+        };
     }
 }

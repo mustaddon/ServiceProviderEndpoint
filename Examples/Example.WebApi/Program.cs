@@ -9,8 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // MediatR registration
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
-// Other services registration
-builder.Services.AddSingleton<ExampleService>();
+// Other test services registration
 builder.Services.AddSingleton<IExampleService, ExampleService>();
 builder.Services.AddScoped(typeof(IExampleGenericService<>), typeof(ExampleGenericService<>));
 

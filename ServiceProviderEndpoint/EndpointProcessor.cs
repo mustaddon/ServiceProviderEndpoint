@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetaFile;
+using MetaFile.Http.AspNetCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SingleApi;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -56,7 +57,7 @@ class EndpointProcessor
             _typeMembers.TryAdd(memberKey, typeMember);
         }
 
-        return GetResult(ctx, typeMember.GetValue(service, ctx, args, _options.JsonSerialization));
+        return GetResult(ctx, typeMember.GetValue(service, ctx, args, _options.JsonSerialization, _typeDeserializer));
     }
 
     object? GetService(HttpContext ctx, Type type)
@@ -89,12 +90,20 @@ class EndpointProcessor
         if (value == null)
             return Results.NoContent();
 
-        ctx.Response.Headers["spe-result-type"] = value.GetType().Serialize();
+        var valueType = value.GetType();
+
+        if (value is Type type)
+        {
+            value = type.Serialize();
+            valueType = Types.Type;
+        }
+
+        ctx.Response.Headers["spe-result-type"] = valueType.Serialize();
 
         if (value is IResult result)
             return result;
 
-        if (value is ISapiFileReadOnly file)
+        if (value is IStreamFileReadOnly file)
             return file.ToResult(ctx.Response, _options.JsonSerialization);
 
         if (value is Stream stream)

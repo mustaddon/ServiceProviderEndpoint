@@ -1,4 +1,4 @@
-﻿using SingleApi;
+﻿using MetaFile;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +9,8 @@ public interface IExampleService
 {
     int SimpleProp { get; set; }
     int SimpleMethod(int a, int b = 10);
-    void VoidMethod();
-    Task AsyncVoidMethod();
-    Task<object?> CastMethod(object? a);
     Task<T> GenericMethod<T>(T a, CancellationToken cancellationToken = default);
     Task<string> UploadStreamMethod(Stream stream, string? name = null, CancellationToken cancellationToken = default);
     Task<Stream> DownloadStreamMethod(string? name = null);
-    Task<SapiFile> DownloadFileMethod(string? name = null);
+    Task<IStreamFile> DownloadFileMethod(string? name = null);
 }
