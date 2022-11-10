@@ -131,37 +131,37 @@ public partial class Test
     [Test]
     public async Task TestMethodStream()
     {
-        using var rnd = _rnd.NextStream();
+        using var rnd = _rnd.NextStream(out var text);
 
         using var val0 = await _client.CreateRequest<ISimpleService>()
             .Member(x => x.MethodStream(rnd))
             .Send();
 
-        Assert.That(val0?.ToText(), Is.EqualTo(rnd.ToText()));
+        Assert.That(await val0?.ToText(), Is.EqualTo(text));
     }
 
     [Test]
     public async Task TestMethodFileStream()
     {
-        using var rnd1 = _rnd.NextStreamFile();
+        using var rnd1 = _rnd.NextStreamFile(out var text1);
 
         using var val1 = await _client.CreateRequest<ISimpleService>()
             .Member(x => x.MethodFileStream(rnd1))
             .Send();
 
-        Assert.That(val1?.Content.ToText(), Is.EqualTo(rnd1.Content.ToText()));
+        Assert.That(await val1?.Content.ToText(), Is.EqualTo(text1));
         Assert.That(val1?.Name, Is.EqualTo(rnd1.Name));
         Assert.That(val1?.Type, Is.EqualTo(rnd1.Type));
 
         // send as non typed
-        using var rnd2 = _rnd.NextStreamFile();
+        using var rnd2 = _rnd.NextStreamFile(out var text2);
         rnd2.Type = null;
 
         using var val2 = await _client.CreateRequest<ISimpleService>()
             .Member(x => x.MethodFileStream(rnd2))
             .Send();
 
-        Assert.That(val2?.Content.ToText(), Is.EqualTo(rnd2.Content.ToText()));
+        Assert.That(await val2?.Content.ToText(), Is.EqualTo(text2));
         Assert.That(val2?.Name, Is.EqualTo(rnd2.Name));
         Assert.That(val2?.Type, Is.EqualTo("application/octet-stream"));
     }
