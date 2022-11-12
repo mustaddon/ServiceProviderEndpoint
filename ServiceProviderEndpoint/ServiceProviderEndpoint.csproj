@@ -7,9 +7,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<SignAssembly>True</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\ServiceProviderEndpoint.snk</AssemblyOriginatorKeyFile>
-		<AssemblyVersion>0.9.6</AssemblyVersion>
-		<FileVersion>0.9.6</FileVersion>
-		<Version>0.9.6</Version>
+		<AssemblyVersion>0.9.11</AssemblyVersion>
+		<FileVersion>0.9.11</FileVersion>
+		<Version>0.9.11</Version>
 		<Company></Company>
 		<Authors>Leonid Salavatov</Authors>
 		<Copyright>Leonid Salavatov 2022</Copyright>
@@ -26,8 +26,9 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<NeutralLanguage />
 		<PackageReleaseNotes></PackageReleaseNotes>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 	</PropertyGroup>
-
+ 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
 			<HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\6.0.11\ref\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
@@ -83,5 +84,17 @@
 		<PackageReference Include="TypeSerialization" Version="1.0.5" />
 		<PackageReference Include="MetaFile.Http.AspNetCore" Version="1.0.1" />
 	</ItemGroup>
+  
+	<ItemGroup>
+		<ProjectReference Include="..\ServiceProviderEndpoint.Common\ServiceProviderEndpoint.Common.csproj">
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
+	</ItemGroup>
+	
+	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
+		</ItemGroup>
+	</Target>
 
 </Project>

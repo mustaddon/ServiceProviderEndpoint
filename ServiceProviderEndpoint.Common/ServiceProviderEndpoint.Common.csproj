@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+	<LangVersion>latest</LangVersion>
+	<Nullable>enable</Nullable>
+	<RootNamespace>ServiceProviderEndpoint</RootNamespace>
+	<SignAssembly>True</SignAssembly>
+	<AssemblyOriginatorKeyFile>..\ServiceProviderEndpoint.snk</AssemblyOriginatorKeyFile>
+	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+  	<InternalsVisibleTo Include="ServiceProviderEndpoint" PublicKey="0024000004800000940000000602000000240000525341310004000001000100f9272501705c56c3a0176051b766a63f60b0d8d5966c7c314021bdec987fe84f858b96039525d20871f819454866a0ff0b9080d3c901b24301f95d38e514ea946f36f6d214391618aa824442f2116a50f7699f6ba3018b47f8d7e5bb4eed80402966494c91d9c48566d0f4745c84a0f3fc4ad42693f1c3651552cd2cdddc1da2" />
+  	<InternalsVisibleTo Include="ServiceProviderEndpoint.Client" PublicKey="0024000004800000940000000602000000240000525341310004000001000100f9272501705c56c3a0176051b766a63f60b0d8d5966c7c314021bdec987fe84f858b96039525d20871f819454866a0ff0b9080d3c901b24301f95d38e514ea946f36f6d214391618aa824442f2116a50f7699f6ba3018b47f8d7e5bb4eed80402966494c91d9c48566d0f4745c84a0f3fc4ad42693f1c3651552cd2cdddc1da2" />
+  </ItemGroup>
+	
+  <ItemGroup>
+  	<PackageReference Include="TypeSerialization" Version="1.0.5" />
+  	<PackageReference Include="System.Text.Json" Version="7.0.0" />
+	<PackageReference Include="MetaFile" Version="1.0.1" />
+  </ItemGroup>
+	
+</Project>

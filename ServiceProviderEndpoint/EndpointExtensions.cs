@@ -24,7 +24,7 @@ public static class ServiceProviderEndpointExtensions
     {
         return builder.MapServiceProvider(route, serviceDescriptors,
             additionalAssemblies.SelectMany(x => x.GetTypes())
-                .Where(x => x.IsPublic && !x.IsStatic() && !Types.Attribute.IsAssignableFrom(x)),
+                .Where(x => x.IsPublic && !x.IsStatic() && !x.IsAttribute()),
             optionsConfigurator);
     }
 

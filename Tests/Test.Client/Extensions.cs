@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -22,4 +23,8 @@ internal static class Extensions
         };
     }
 
+    public static IEnumerable<T?> NextEnumerable<T>(this Random rnd, Func<int, T> val)
+    {
+        return Enumerable.Range(0, rnd.Next(10, 100)).Select(val);
+    }
 }

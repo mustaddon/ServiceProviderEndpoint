@@ -54,12 +54,6 @@ internal class ArgsBuilder
             }
         }
 
-        if (arg is Type type)
-        {
-            result.Add(type.Serialize());
-            return;
-        }
-
         result.Add(arg);
     }
 }

@@ -15,6 +15,7 @@ class EndpointProcessor
     {
         _options = options;
         _typeDeserializer = TypeDeserializers.Create(services, types);
+        _options.JsonSerialization.Converters.Add(new JsonTypeConverter(_typeDeserializer));
         _serviceTypes = new(services.Select(x => x.ServiceType));
     }
 
@@ -90,15 +91,9 @@ class EndpointProcessor
         if (value == null)
             return Results.NoContent();
 
-        var valueType = value.GetType();
+        var valueType = value is Type ? Types.Type : value.GetType();
 
-        if (value is Type type)
-        {
-            value = type.Serialize();
-            valueType = Types.Type;
-        }
-
-        ctx.Response.Headers["spe-result-type"] = valueType.Serialize();
+        ctx.Response.Headers[Headers.ResultType] = valueType.Serialize();
 
         if (value is IResult result)
             return result;

@@ -17,10 +17,11 @@ namespace ServiceProviderEndpoint.Client;
 
 public class SpeClient : ISpeClient, IDisposable
 {
-    public SpeClient(string address, SpeClientSettings? settings = null)
+    public SpeClient(string address, Action<SpeClientSettings>? settingsConfigurator = null)
     {
-        _settings = settings ?? SpeClientSettings.Default;
         _client = new(() => CreateClient(address));
+        _settings = new SpeClientSettings(); settingsConfigurator?.Invoke(_settings);
+        _settings.JsonSerializerOptions.Converters.Add(new JsonTypeConverter(_settings.TypeDeserializer));
     }
 
     private readonly SpeClientSettings _settings;
@@ -104,7 +105,7 @@ public class SpeClient : ISpeClient, IDisposable
         if (response.StatusCode == HttpStatusCode.NoContent || resultType.Equals(Types.Void))
             return null;
 
-        if (resultType.Equals(Types.Object) && response.Headers.TryGetValues("spe-result-type", out var resultTypeHeaders))
+        if (resultType.Equals(Types.Object) && response.Headers.TryGetValues(Headers.ResultType, out var resultTypeHeaders))
             resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First());
 
         if (resultType.Equals(Types.Stream))
@@ -121,12 +122,6 @@ public class SpeClient : ISpeClient, IDisposable
 
         using (response)
         {
-            if (resultType.Equals(Types.Type))
-            {
-                var typeStr = await response.Content.ReadFromJsonAsync<string>(_settings.JsonSerializerOptions, cancellationToken);
-                return typeStr == null ? null : _settings.TypeDeserializer.Deserialize(typeStr);
-            }
-
             return await response.Content.ReadFromJsonAsync(resultType, _settings.JsonSerializerOptions, cancellationToken);
         }
     }

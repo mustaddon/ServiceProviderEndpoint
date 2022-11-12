@@ -87,16 +87,7 @@ internal static class TypeMemberExtensions
 
             if (argsIndex < argsCount)
             {
-                var arg = args![argsIndex++];
-
-                if (type.Equals(Types.Type))
-                {
-                    var argStr = arg.Deserialize<string>();
-                    if (argStr != null) result[i] = typeDeserializer.Deserialize(argStr);
-                    continue;
-                }
-
-                result[i] = arg.Deserialize(type, jsonOptions);
+                result[i] = args![argsIndex++].Deserialize(type, jsonOptions);
                 continue;
             }
 
