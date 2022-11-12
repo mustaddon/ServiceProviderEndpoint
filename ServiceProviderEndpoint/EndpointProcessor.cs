@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using TypeSerialization;
+using TypeSerialization.Json;
 
 namespace ServiceProviderEndpoint;
 
@@ -44,7 +45,7 @@ class EndpointProcessor
 
     Task<IResult> Process(HttpContext ctx, string serviceName, string memberName, string? paramererNames, JsonArray? args)
     {
-        var serviceTypeObj = _typeDeserializer.Deserialize(serviceName);
+        var serviceTypeObj = _typeDeserializer.Deserialize(serviceName)!;
         var service = GetService(ctx, serviceTypeObj) ?? throw new InvalidOperationException($"Service '{serviceTypeObj}' not found.");
         var memberKey = string.Join("|", serviceName, memberName, paramererNames, args?.Count);
 
@@ -70,7 +71,7 @@ class EndpointProcessor
         return ctx.RequestServices.GetService(type);
     }
 
-    Type[]? ExtractGenericTypes(ref string memberName)
+    Type?[]? ExtractGenericTypes(ref string memberName)
     {
         var genericIndex = memberName.IndexOf('(');
 
@@ -91,9 +92,7 @@ class EndpointProcessor
         if (value == null)
             return Results.NoContent();
 
-        var valueType = value is Type ? Types.Type : value.GetType();
-
-        ctx.Response.Headers[Headers.ResultType] = valueType.Serialize();
+        ctx.Response.Headers[Headers.ResultType] = value.GetType().Serialize();
 
         if (value is IResult result)
             return result;

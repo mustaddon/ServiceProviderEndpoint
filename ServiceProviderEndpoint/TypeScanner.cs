@@ -6,7 +6,7 @@ internal static class TypeScanner
 {
     public const BindingFlags Flags = BindingFlags.Public | BindingFlags.Instance;
 
-    public static TypeMember? FindMember(this Type type, string name, Type[]? genericArgs, Type[]? argumentTypes, int argsCount, bool recursionless = false)
+    public static TypeMember? FindMember(this Type type, string name, Type?[]? genericArgs, Type?[]? argumentTypes, int argsCount, bool recursionless = false)
     {
         var isGeneric = genericArgs != null;
 
@@ -54,7 +54,7 @@ internal static class TypeScanner
         return null;
     }
 
-    static bool CheckParameterTypes(ParameterInfo[] parameters, Type[] arguments)
+    static bool CheckParameterTypes(ParameterInfo[] parameters, Type?[] arguments)
     {
         if (parameters.Length < arguments.Length)
             return false;
@@ -66,21 +66,24 @@ internal static class TypeScanner
         return true;
     }
 
-    static TypeMemberParameter[] ApplyArgumentTypes(this ParameterInfo[] parameters, Type[]? arguments)
+    static TypeMemberParameter[] ApplyArgumentTypes(this ParameterInfo[] parameters, Type?[]? arguments)
     {
         var result = new TypeMemberParameter[parameters.Length];
         var argumentsLength = arguments?.Length ?? 0;
 
         for (var i = 0; i < parameters.Length; i++)
-            result[i] = new(argumentsLength > i ? arguments![i] : parameters[i].ParameterType,
-                DefaultValue: parameters[i].DefaultValue);
+        {
+            var parameter = parameters[i];
+            var argumentType = argumentsLength > i ? arguments![i] : null;
+            result[i] = new(argumentType ?? parameter.ParameterType, parameter.DefaultValue);
+        }
 
         return result;
     }
 
-    static TypeMemberParameter[] ApplyArgumentType(this Type type, Type[]? arguments)
+    static TypeMemberParameter[] ApplyArgumentType(this Type type, Type?[]? arguments)
     {
-        return new[] { new TypeMemberParameter(arguments?.Length > 0 ? arguments[0] : type) };
+        return new[] { new TypeMemberParameter(arguments?.FirstOrDefault() ?? type) };
     }
 
 }

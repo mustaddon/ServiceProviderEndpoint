@@ -16,8 +16,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-  	<PackageReference Include="TypeSerialization" Version="1.0.5" />
-  	<PackageReference Include="System.Text.Json" Version="7.0.0" />
 	<PackageReference Include="MetaFile" Version="1.0.1" />
   </ItemGroup>
 	

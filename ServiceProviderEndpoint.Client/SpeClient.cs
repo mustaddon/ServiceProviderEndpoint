@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using TypeSerialization.Json;
 
 namespace ServiceProviderEndpoint.Client;
 
@@ -106,7 +107,7 @@ public class SpeClient : ISpeClient, IDisposable
             return null;
 
         if (resultType.Equals(Types.Object) && response.Headers.TryGetValues(Headers.ResultType, out var resultTypeHeaders))
-            resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First());
+            resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First())!;
 
         if (resultType.Equals(Types.Stream))
             return new SpeStreamWrapper(await response.Content.ReadAsStreamAsync(cancellationToken), () => response.Dispose());
