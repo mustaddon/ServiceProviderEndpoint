@@ -34,7 +34,7 @@ If your method has object type arguments like:
 ```C#
 public Task<int> ExampleMethod(object data, CancellationToken cancellationToken) 
 ```
-Then you need to add the type for cast to the request:
+Then you need to add the type for cast as an additional parameter to the request:
 ```
 GET /services/IYourService/ExampleMethod/List(String)?args=[["list_item1","list_item2","list_item3"]]
 ```
