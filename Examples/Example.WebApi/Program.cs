@@ -18,9 +18,7 @@ var app = builder.Build();
 
 // Endpoint mapping
 app.MapServiceProvider("services", builder.Services
-    // add a filter if needed
-    .Where(x => x.ServiceType != typeof(IConfiguration)),
-    // additional assemblies for types casting and generics resolving
-    typeof(int).Assembly, typeof(List<>).Assembly);
+    // add a filter if you need
+    .Where(x => x.ServiceType != typeof(IConfiguration)));
 
 app.Run();

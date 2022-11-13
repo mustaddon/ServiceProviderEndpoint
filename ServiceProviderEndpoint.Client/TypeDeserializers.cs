@@ -6,6 +6,6 @@ namespace ServiceProviderEndpoint.Client;
 internal static class TypeDeserializers
 {
     public static readonly TypeDeserializer Default = new(Types.Cores
-        .Concat(Types.Systems)
-        .Concat(Types.MetaFiles));
+        .Concat(Types.Systems.Value)
+        .Concat(Types.MetaFiles.Value));
 }

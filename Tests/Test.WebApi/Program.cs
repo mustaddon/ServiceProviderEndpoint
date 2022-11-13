@@ -10,16 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<SimpleService>();
 builder.Services.AddSingleton<ISimpleService>(x => x.GetRequiredService<SimpleService>());
 
+builder.Services.AddSingleton<IGenericService<int>, GenericService<int>>();
+builder.Services.AddSingleton(typeof(IGenericService<>), typeof(GenericService<>));
+
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddTransient<IRequestHandler<FileUpload<FileMetadata>, FileUploadResult<FileMetadata>>, FileUploadHandler<FileMetadata>>();
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.Limits.MaxRequestBodySize = long.MaxValue;
-});
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
 
 var app = builder.Build();
 
-app.MapServiceProvider("services", builder.Services);
+app.MapServiceProvider("services",
+    builder.Services.Where(x => x.ServiceType.Namespace!.StartsWith("Test")),
+    new[] {
+        typeof(SimpleServiceExtensions),
+        typeof(GenericServiceExtensions),
+    });
 
 app.Run();

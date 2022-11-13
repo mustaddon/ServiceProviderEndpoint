@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TypeSerialization;
 
@@ -67,7 +68,7 @@ namespace ServiceProviderEndpoint.Client
                 parameterTypes[i] = ChooseParameterType(parameterType, argumentType);
             }
 
-            paths.Add(parameterTypes.Serialize());
+            paths.Add(parameterTypes.Skip(method.IsExtension() ? 1 : 0).Serialize());
         }
 
         private static Type ChooseParameterType(Type parameterType, Type? argumentType)

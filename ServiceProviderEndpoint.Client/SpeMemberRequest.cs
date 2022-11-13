@@ -47,8 +47,11 @@ internal class SpeMemberRequest<TService, TResult> : ISpeMemberRequest<TService,
 
         if (_expression.Body is MethodCallExpression methodCall)
         {
-            args = methodCall.Arguments.Select(GetArgumentValue).ToArray();
             member = methodCall.Method;
+            args = methodCall.Arguments
+                .Skip(methodCall.Method.IsExtension() ? 1 : 0)
+                .Select(GetArgumentValue)
+                .ToArray();
         }
         else if (_expression.Body is MemberExpression memberExpr)
         {

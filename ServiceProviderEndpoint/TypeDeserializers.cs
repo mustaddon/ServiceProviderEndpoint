@@ -9,18 +9,18 @@ internal static class TypeDeserializers
     {
         return new(services
             .SelectMany(x => new[] { x.ServiceType }
-                .Concat(x.ServiceType.GetFields(TypeScanner.Flags)
+                .Concat(x.ServiceType.GetFields(MemberProvider.Flags)
                     .Select(x => x.FieldType))
-                .Concat(x.ServiceType.GetProperties(TypeScanner.Flags)
+                .Concat(x.ServiceType.GetProperties(MemberProvider.Flags)
                     .Select(x => x.PropertyType))
-                .Concat(x.ServiceType.GetMethods(TypeScanner.Flags)
+                .Concat(x.ServiceType.GetMethods(MemberProvider.Flags)
                     .SelectMany(x => x.GetParameters())
                     .Select(x => x.ParameterType))
                 .Where(x => !x.IsGenericParameter))
             .Concat(types.Where(x => !x.IsStatic()))
             .Concat(Types.Cores)
-            .Concat(Types.Systems)
-            .Concat(Types.MetaFiles));
+            .Concat(Types.Systems.Value)
+            .Concat(Types.MetaFiles.Value));
     }
 
 }

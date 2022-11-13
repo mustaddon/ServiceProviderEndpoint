@@ -12,15 +12,17 @@ namespace ServiceProviderEndpoint;
 
 class EndpointProcessor
 {
-    public EndpointProcessor(IEnumerable<ServiceDescriptor> services, IEnumerable<Type> types, SpeOptions options)
+    public EndpointProcessor(IEnumerable<ServiceDescriptor> services, IEnumerable<Type> extensions, SpeOptions options)
     {
         _options = options;
-        _typeDeserializer = TypeDeserializers.Create(services, types);
+        _memberProvider = new(services, extensions);
+        _typeDeserializer = TypeDeserializers.Create(services, extensions);
         _options.JsonSerialization.Converters.Add(new JsonTypeConverter(_typeDeserializer));
         _serviceTypes = new(services.Select(x => x.ServiceType));
     }
 
     readonly SpeOptions _options;
+    readonly MemberProvider _memberProvider;
     readonly TypeDeserializer _typeDeserializer;
     readonly ConcurrentDictionary<string, TypeMember> _typeMembers = new();
     readonly HashSet<Type> _serviceTypes;
@@ -46,29 +48,20 @@ class EndpointProcessor
     Task<IResult> Process(HttpContext ctx, string serviceName, string memberName, string? paramererNames, JsonArray? args)
     {
         var serviceTypeObj = _typeDeserializer.Deserialize(serviceName)!;
-        var service = GetService(ctx, serviceTypeObj) ?? throw new InvalidOperationException($"Service '{serviceTypeObj}' not found.");
+        var service = ctx.RequestServices.GetService(serviceTypeObj) ?? throw new InvalidOperationException($"Service '{serviceName}' not found.");
         var memberKey = string.Join("|", serviceName, memberName, paramererNames, args?.Count);
 
         if (!_typeMembers.TryGetValue(memberKey, out var typeMember))
         {
             var parameters = paramererNames == null ? null : _typeDeserializer.DeserializeMany(paramererNames);
             var memberGenericArgs = ExtractGenericTypes(ref memberName);
-            typeMember = serviceTypeObj.FindMember(memberName, memberGenericArgs, parameters, args?.Count ?? 0)
+            typeMember = _memberProvider.GetMember(serviceTypeObj, memberName, memberGenericArgs, parameters, args?.Count ?? 0)
                 ?? throw new InvalidOperationException($"Member '{memberName}'{memberGenericArgs?.Length} not found.");
 
             _typeMembers.TryAdd(memberKey, typeMember);
         }
 
         return GetResult(ctx, typeMember.GetValue(service, ctx, args, _options.JsonSerialization, _typeDeserializer));
-    }
-
-    object? GetService(HttpContext ctx, Type type)
-    {
-        if (!_serviceTypes.Contains(type) && (!type.IsGenericType
-            || !_serviceTypes.Contains(type.GetGenericTypeDefinition())))
-            return null;
-
-        return ctx.RequestServices.GetService(type);
     }
 
     Type?[]? ExtractGenericTypes(ref string memberName)

@@ -7,11 +7,11 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class ServiceProviderEndpointExtensions
 {
-    public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, IEnumerable<Type> additionalTypes, Action<SpeOptions>? optionsConfigurator = null)
+    public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, IEnumerable<Type> extensions, Action<SpeOptions>? optionsConfigurator = null)
     {
         var pattern = $"{route.TrimEnd('/')}/{{service:required}}/{{member:required}}/{{parameters?}}";
         var options = new SpeOptions(); optionsConfigurator?.Invoke(options);
-        var processor = new EndpointProcessor(serviceDescriptors, additionalTypes, options);
+        var processor = new EndpointProcessor(serviceDescriptors, extensions, options);
 
         return new EndpointConventionBuilder(new[]
         {
@@ -19,17 +19,8 @@ public static class ServiceProviderEndpointExtensions
             builder.MapPost(pattern, processor.ProcessPost),
         });
     }
-
-    public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, IEnumerable<Assembly> additionalAssemblies, Action<SpeOptions>? optionsConfigurator = null)
+    public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, params Type[] extensions)
     {
-        return builder.MapServiceProvider(route, serviceDescriptors,
-            additionalAssemblies.SelectMany(x => x.GetTypes())
-                .Where(x => x.IsPublic && !x.IsStatic() && !x.IsAttribute()),
-            optionsConfigurator);
-    }
-
-    public static IEndpointConventionBuilder MapServiceProvider(this IEndpointRouteBuilder builder, string route, IEnumerable<ServiceDescriptor> serviceDescriptors, params Assembly[] additionalAssemblies)
-    {
-        return builder.MapServiceProvider(route, serviceDescriptors, additionalAssemblies.AsEnumerable(), null);
+        return builder.MapServiceProvider(route, serviceDescriptors, extensions.AsEnumerable(), null);
     }
 }

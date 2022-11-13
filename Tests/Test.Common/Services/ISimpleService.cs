@@ -33,3 +33,4 @@ public interface ISimpleService
     Task<IStreamFile> MethodFileStreamAsync(IStreamFile a, CancellationToken cancellationToken);
 
 }
+
