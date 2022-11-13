@@ -1,4 +1,4 @@
-# ServiceProviderEndpoint [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.svg)](http://badge.fury.io/nu/ServiceProviderEndpoint)
+# ServiceProviderEndpoint [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.svg?)](http://badge.fury.io/nu/ServiceProviderEndpoint)
 IServiceProvider webapi endpoint for faster and easier development.
 
 
