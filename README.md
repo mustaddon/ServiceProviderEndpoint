@@ -2,6 +2,7 @@
 WebApi endpoint for IServiceProvider to improve usability and development speed.
 
 
+## Usage
 If you have already registered services in the collection and want to give access to them via http, then just map a universal endpoint like this:
 ```C#
 app.MapServiceProvider("services", builder.Services);
@@ -52,7 +53,7 @@ app.MapServiceProvider("services", builder.Services)
 	.RequireAuthorization();
 ```
 
-Security for methods can be added via Scrutor-decorators:
+Security for methods can be added via [Scrutor-decorators](https://github.com/khellang/Scrutor):
 ```C#
 builder.Services.AddSingleton<IExampleService, ExampleService>();
 builder.Services.Decorate<IExampleService, ExampleServiceSecure>();
