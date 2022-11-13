@@ -1,4 +1,4 @@
-# ServiceProviderEndpoint [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.svg)](http://badge.fury.io/nu/ServiceProviderEndpoint)
+# ServiceProviderEndpoint [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.svg?)](http://badge.fury.io/nu/ServiceProviderEndpoint)
 IServiceProvider webapi endpoint for faster and easier development.
 
 
@@ -34,7 +34,7 @@ If your method has object type arguments like:
 ```C#
 public Task<int> ExampleMethod(object data, CancellationToken cancellationToken) 
 ```
-Then you need to add the type for cast to the request:
+Then you need to add the type for cast as an additional parameter to the request:
 ```
 GET /services/IYourService/ExampleMethod/List(String)?args=[["list_item1","list_item2","list_item3"]]
 ```
@@ -73,5 +73,7 @@ var result = await client
 ```
 
 
-[See example project for details...](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
+## Example projects
+* [WebApi](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
+* [Client](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
 
