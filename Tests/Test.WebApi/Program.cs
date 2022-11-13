@@ -25,6 +25,6 @@ app.MapServiceProvider("services",
     new[] {
         typeof(SimpleServiceExtensions),
         typeof(GenericServiceExtensions),
-    }).RequireAuthorization();
+    });
 
 app.Run();
