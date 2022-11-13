@@ -18,14 +18,12 @@ class EndpointProcessor
         _memberProvider = new(services, extensions);
         _typeDeserializer = TypeDeserializers.Create(services, extensions);
         _options.JsonSerialization.Converters.Add(new JsonTypeConverter(_typeDeserializer));
-        _serviceTypes = new(services.Select(x => x.ServiceType));
     }
 
     readonly SpeOptions _options;
     readonly MemberProvider _memberProvider;
     readonly TypeDeserializer _typeDeserializer;
     readonly ConcurrentDictionary<string, TypeMember> _typeMembers = new();
-    readonly HashSet<Type> _serviceTypes;
 
     public Task<IResult> ProcessGet(HttpContext ctx, string service, string member, string? parameters, string? args)
     {
