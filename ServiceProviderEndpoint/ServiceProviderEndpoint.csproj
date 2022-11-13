@@ -7,16 +7,16 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<SignAssembly>True</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\ServiceProviderEndpoint.snk</AssemblyOriginatorKeyFile>
-		<AssemblyVersion>0.9.14</AssemblyVersion>
-		<FileVersion>0.9.14</FileVersion>
-		<Version>0.9.14</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Version>1.0.0</Version>
 		<Company></Company>
 		<Authors>Leonid Salavatov</Authors>
 		<Copyright>Leonid Salavatov 2022</Copyright>
 		<PackageId>ServiceProviderEndpoint</PackageId>
 		<Product>ServiceProviderEndpoint</Product>
 		<Title>ServiceProviderEndpoint</Title>
-		<Description>WebApi endpoint for IServiceProvider</Description>
+		<Description>IServiceProvider webapi endpoint for faster and easier development</Description>
 		<PackageTags>serviceprovider servicefactory service-provider service-factory endpoint extension minimal-api web-api rest-api ioc-rest ioc-endpoint</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/mustaddon/ServiceProviderEndpoint</PackageProjectUrl>

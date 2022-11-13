@@ -5,12 +5,15 @@ using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
 
 // MediatR registration
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
-// Other test services registration
+// simple service
 builder.Services.AddSingleton<IExampleService, ExampleService>();
+builder.Services.Decorate<IExampleService, ExampleServiceSecure>();
+// generic open service
 builder.Services.AddScoped(typeof(IExampleGenericService<>), typeof(ExampleGenericService<>));
 
 
@@ -19,6 +22,9 @@ var app = builder.Build();
 // Endpoint mapping
 app.MapServiceProvider("services", builder.Services
     // add a filter if you need
-    .Where(x => x.ServiceType != typeof(IConfiguration)));
+    .Where(x => x.ServiceType != typeof(IConfiguration)),
+    // add types for extensions, casting or resolving 
+    new [] { typeof(ExampleServiceExtensions) }
+);
 
 app.Run();
