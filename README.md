@@ -73,5 +73,7 @@ var result = await client
 ```
 
 
-[See example project for details...](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
+## Example projects
+* [WebApi](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
+* [Client](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
 
