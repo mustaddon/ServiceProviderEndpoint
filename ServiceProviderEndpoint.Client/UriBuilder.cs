@@ -51,11 +51,12 @@ namespace ServiceProviderEndpoint.Client
             paths.Add(!method.IsGenericMethod ? method.Name
                     : $"{method.Name}({method.GetGenericArguments().Serialize()})");
 
+            var isExtension = method.IsExtension();
             var parameterInfos = method.GetParameters();
-            var parameterTypes = new Type[parameterInfos.Length];
+            var parameterTypes = new Type[isExtension ? parameterInfos.Length - 1 : parameterInfos.Length];
             var parametersLength = parameters?.Length ?? 0;
 
-            for (var i = 0; i < parameterInfos.Length; i++)
+            for (int i = 0, j = isExtension ? 1 : 0; i < parameterTypes.Length; i++, j++)
             {
                 if (parametersLength > i && parameters![i] != null)
                 {
@@ -63,12 +64,12 @@ namespace ServiceProviderEndpoint.Client
                     continue;
                 }
 
-                var parameterType = parameterInfos[i].ParameterType;
+                var parameterType = parameterInfos[j].ParameterType;
                 var argumentType = args.Length > i ? args[i]?.GetType() : null;
                 parameterTypes[i] = ChooseParameterType(parameterType, argumentType);
             }
 
-            paths.Add(parameterTypes.Skip(method.IsExtension() ? 1 : 0).Serialize());
+            paths.Add(parameterTypes.Serialize());
         }
 
         private static Type ChooseParameterType(Type parameterType, Type? argumentType)

@@ -1,4 +1,6 @@
-﻿namespace Test.Client;
+﻿using Test.Services;
+
+namespace Test.Client;
 
 public partial class Test
 {
@@ -43,4 +45,47 @@ public partial class Test
 
         Assert.That(val2, Is.EqualTo(rndA));
     }
+
+    [Test]
+    public async Task TestGenericMethodExt()
+    {
+        var rndA = _rnd.Next();
+        var serviceRequest = _client.CreateRequest<IGenericService<object>>();
+
+        // B as int
+        var val0 = await serviceRequest
+            .Member(x => x.MethodExt(rndA))
+            .Send();
+
+        Assert.That(val0, Is.EqualTo(rndA));
+
+        // B as string
+        var val1 = await serviceRequest
+            .Member(x => x.MethodExt(rndA.ToString()))
+            .Send();
+
+        Assert.That(val1, Is.EqualTo(rndA.ToString()));
+
+        // B as null
+        var val2 = await serviceRequest
+            .Member(x => x.MethodExt(null))
+            .Send();
+
+        Assert.That(val2, Is.Null);
+    }
+
+    [Test]
+    public async Task TestGenericMethodExtInt()
+    {
+        var rndA = _rnd.Next();
+        var rndB = _rnd.Next();
+        var serviceRequest = _client.CreateRequest<IGenericService<int>>();
+
+        var val0 = await serviceRequest
+            .Member(x => x.MethodExtInt(rndA, rndB))
+            .Send();
+
+        Assert.That(val0, Is.EqualTo(rndA + rndB));
+    }
+
 }

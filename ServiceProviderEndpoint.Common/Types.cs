@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ internal static class Types
     }
 
     public static readonly Type[] Cores = new[] {
-        typeof(object), typeof(Type), typeof(Stream), typeof(CancellationToken?)
+        typeof(object), typeof(Type), typeof(Stream), typeof(CancellationToken?), typeof(JsonElement)
     };
 
     public static readonly Lazy<Type[]> Systems = new(() => Array.Empty<Type>()
