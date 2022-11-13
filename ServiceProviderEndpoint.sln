@@ -19,6 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.WebApi", "Tests\Test.W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D61780F-9705-41A7-BA83-6DACBB0631BB}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		pack.ps1 = pack.ps1
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -28,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Client", "Examples\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Client", "Tests\Test.Client\Test.Client.csproj", "{32C3B1AD-4783-437C-85AC-449057CC530C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceProviderEndpoint.Common", "ServiceProviderEndpoint.Common\ServiceProviderEndpoint.Common.csproj", "{CD064CE6-37CD-42FC-BDA4-807AD2D61899}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceProviderEndpoint.Common", "ServiceProviderEndpoint.Common\ServiceProviderEndpoint.Common.csproj", "{CD064CE6-37CD-42FC-BDA4-807AD2D61899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
