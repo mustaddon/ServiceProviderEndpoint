@@ -1,5 +1,5 @@
 # ServiceProviderEndpoint [![NuGet version](https://badge.fury.io/nu/ServiceProviderEndpoint.svg)](http://badge.fury.io/nu/ServiceProviderEndpoint)
-WebApi endpoint for IServiceProvider to improve usability and development speed.
+IServiceProvider webapi endpoint for faster and easier development.
 
 
 ## Usage
