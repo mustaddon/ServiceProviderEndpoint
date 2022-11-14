@@ -44,13 +44,13 @@ GET /services/IYourService/ExampleMethod/List(String)?args=[["list_item1","list_
 If you don't want to publish all services in the collection, then just add a filter:
 ```C#
 app.MapServiceProvider("services", builder.Services
-	.Where(x => x.ServiceType.Namespace.StartsWith("Example")));
+  .Where(x => x.ServiceType.Namespace.StartsWith("Example")));
 ```
 
 If authorization is needed, then it is added by the standard method for IEndpointConventionBuilder:
 ```C#
 app.MapServiceProvider("services", builder.Services)
-	.RequireAuthorization();
+  .RequireAuthorization();
 ```
 
 Security for methods can be added via [Scrutor-decorators](https://github.com/khellang/Scrutor):
