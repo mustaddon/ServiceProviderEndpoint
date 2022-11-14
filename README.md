@@ -40,7 +40,7 @@ GET /services/IYourService/ExampleMethod/List(String)?args=[["list_item1","list_
 ```
 
 
-## In/out file streams
+## File streams
 For downloading, it is enough that the method returns a stream object:
 ```C#
 Task<Stream> SomeDownloadMethod(string a, string b, string c, CancellationToken cancellationToken);
