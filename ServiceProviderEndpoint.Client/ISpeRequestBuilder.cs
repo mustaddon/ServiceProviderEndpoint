@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace ServiceProviderEndpoint.Client;
 
+
 public interface ISpeServiceRequest<TService>
 {
     ISpeMemberRequest<TService> Member(Expression<Action<TService>> expression);

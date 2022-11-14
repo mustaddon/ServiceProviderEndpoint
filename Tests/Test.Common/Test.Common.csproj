@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
 	<PackageReference Include="MetaFile" Version="1.0.1" />
+	<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

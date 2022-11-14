@@ -12,7 +12,7 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 // simple service
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.Decorate<IExampleService, ExampleServiceSecure>();
+builder.Services.Decorate<IExampleService, SecureExampleService>();
 // generic open service
 builder.Services.AddScoped(typeof(IExampleGenericService<>), typeof(ExampleGenericService<>));
 

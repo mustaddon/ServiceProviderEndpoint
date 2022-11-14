@@ -9,6 +9,9 @@ namespace Test.Services;
 
 public interface ISimpleService
 {
+    string HeaderValue(string name);
+
+
     int PropVal { get; set; }
     string? PropRef { get; set; }
     object? PropObj { get; set; }
@@ -22,6 +25,7 @@ public interface ISimpleService
     object? MethodObj(object? a);
     Type? MethodType(Type? a);
     Stream MethodStream(Stream a);
+    IStreamFile MethodStreamExtras(Stream a, string name);
     IStreamFile MethodFileStream(IStreamFile a);
 
     Task MethodVoidAsync(CancellationToken cancellationToken = default);
@@ -30,6 +34,7 @@ public interface ISimpleService
     Task<object?> MethodObjAsync(object? a, CancellationToken cancellationToken);
     Task<Type?> MethodTypeAsync(Type? a, CancellationToken cancellationToken);
     Task<Stream> MethodStreamAsync(Stream a, CancellationToken cancellationToken);
+    Task<IStreamFile> MethodStreamExtrasAsync(Stream a, string name, CancellationToken cancellationToken);
     Task<IStreamFile> MethodFileStreamAsync(IStreamFile a, CancellationToken cancellationToken);
 
 }

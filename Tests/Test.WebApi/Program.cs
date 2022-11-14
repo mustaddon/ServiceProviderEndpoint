@@ -6,6 +6,7 @@ using Test.WebApi.Handlers;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<SimpleService>();
 builder.Services.AddSingleton<ISimpleService>(x => x.GetRequiredService<SimpleService>());

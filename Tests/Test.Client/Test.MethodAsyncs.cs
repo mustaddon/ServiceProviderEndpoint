@@ -143,6 +143,19 @@ public partial class Test
     }
 
     [Test]
+    public async Task TestMethodStreamExtrasAsync()
+    {
+        using var rnd1 = _rnd.NextStreamFile(out var text1);
+
+        using var val1 = await _client.CreateRequest<ISimpleService>()
+            .Member(x => x.MethodStreamExtrasAsync(rnd1.Content, rnd1.Name!, CancellationToken.None))
+            .Send();
+
+        Assert.That(await val1?.Content.ToText()!, Is.EqualTo(text1));
+        Assert.That(val1?.Name, Is.EqualTo(rnd1.Name));
+    }
+
+    [Test]
     public async Task TestMethodFileStreamAsync()
     {
         using var rnd1 = _rnd.NextStreamFile(out var text1);

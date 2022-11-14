@@ -2,9 +2,9 @@
 
 namespace Example.WebApi.Services;
 
-public class ExampleServiceSecure : IExampleService
+public class SecureExampleService : IExampleService
 {
-    public ExampleServiceSecure(IExampleService service, IHttpContextAccessor httpContextAccessor)
+    public SecureExampleService(IExampleService service, IHttpContextAccessor httpContextAccessor)
     {
         _service = service;
         _httpContextAccessor = httpContextAccessor;

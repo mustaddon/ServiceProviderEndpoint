@@ -110,7 +110,7 @@ public class SpeClient : ISpeClient, IDisposable
             resultType = _settings.TypeDeserializer.Deserialize(resultTypeHeaders.First())!;
 
         if (resultType.Equals(Types.Stream))
-            return new SpeStreamWrapper(await response.Content.ReadAsStreamAsync(cancellationToken), () => response.Dispose());
+            return new SpeStream(await response.Content.ReadAsStreamAsync(cancellationToken), () => response.Dispose());
 
         if (!resultType.Equals(Types.Object))
         {

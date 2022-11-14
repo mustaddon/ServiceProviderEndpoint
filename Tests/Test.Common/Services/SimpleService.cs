@@ -1,4 +1,5 @@
 ﻿using MetaFile;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,14 @@ namespace Test.Services;
 
 public class SimpleService : ISimpleService
 {
+    public SimpleService(IHttpContextAccessor httpContextAccessor)
+        => _httpContextAccessor = httpContextAccessor;
+
+    readonly IHttpContextAccessor _httpContextAccessor;
+
+    public string HeaderValue(string name) => _httpContextAccessor.HttpContext.Request.Headers[name];
+
+
     public int FieldVal = 0;
     public string? FieldRef;
     public Type? FieldType;
@@ -32,8 +41,18 @@ public class SimpleService : ISimpleService
     public string? MethodRef(string? a) => a;
     public object? MethodObj(object? a) => a;
     public Type? MethodType(Type? a) => a;
-    public Stream MethodStream(Stream a) => MethodStreamAsync(a).Result;
-    public IStreamFile MethodFileStream(IStreamFile a) => MethodFileStreamAsync(a).Result;
+
+    public Stream MethodStream(Stream a)
+    {
+        var ms = new MemoryStream();
+        a.CopyTo(ms);
+        ms.Position = 0;
+        return ms;
+    }
+
+    public IStreamFile MethodStreamExtras(Stream a, string name) => new StreamFile { Content = MethodStream(a), Name = name };
+    public IStreamFile MethodFileStream(IStreamFile a) => new StreamFile { Content = MethodStream(a.Content), Name = a.Name, Type = a.Type };
+
 
 
     public Task MethodVoidAsync(CancellationToken cancellationToken) => Task.Run(() => MethodVoid(), cancellationToken);
@@ -41,7 +60,7 @@ public class SimpleService : ISimpleService
     public Task<string?> MethodRefAsync(string? a, CancellationToken cancellationToken) => Task.FromResult(MethodRef(a));
     public Task<object?> MethodObjAsync(object? a, CancellationToken cancellationToken) => Task.FromResult(MethodObj(a));
     public Task<Type?> MethodTypeAsync(Type? a, CancellationToken cancellationToken) => Task.FromResult(MethodType(a));
-    
+
     public async Task<Stream> MethodStreamAsync(Stream a, CancellationToken cancellationToken = default)
     {
         var ms = new MemoryStream();
@@ -50,17 +69,13 @@ public class SimpleService : ISimpleService
         return ms;
     }
 
+    public async Task<IStreamFile> MethodStreamExtrasAsync(Stream a, string name, CancellationToken cancellationToken = default)
+    {
+        return new StreamFile { Content = await MethodStreamAsync(a, cancellationToken), Name = name };
+    }
+
     public async Task<IStreamFile> MethodFileStreamAsync(IStreamFile a, CancellationToken cancellationToken = default)
     {
-        var ms = new MemoryStream();
-        await a.Content.CopyToAsync(ms);
-        ms.Position = 0;
-
-        return new StreamFile
-        {
-            Content = ms,
-            Name = a.Name,
-            Type = a.Type,
-        };
+        return new StreamFile { Content = await MethodStreamAsync(a.Content, cancellationToken), Name = a.Name, Type = a.Type };
     }
 }
