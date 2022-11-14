@@ -50,6 +50,7 @@ Download request will be like this:
 GET /services/IYourService/SomeDownloadMethod?args=["argA","argB","argC"]
 ```
 
+
 For uploading, the method must have an argument of type Stream (position doesn't matter):
 ```C#
 Task SomeUploadMethod(Stream stream, string a, string b, string c, CancellationToken cancellationToken); 
@@ -86,7 +87,7 @@ app.MapServiceProvider("services", builder.Services)
 Security for methods can be added via [Scrutor-decorators](https://github.com/khellang/Scrutor):
 ```C#
 builder.Services.AddSingleton<IExampleService, ExampleService>();
-builder.Services.Decorate<IExampleService, ExampleServiceSecure>();
+builder.Services.Decorate<IExampleService, SecureExampleService>();
 ```
 
 
