@@ -32,13 +32,43 @@ Requests use URL-safe notation for types **Dictionary(String-Array(Int32))** is 
 ## Type casting
 If your method has object type arguments like:
 ```C#
-public Task<int> ExampleMethod(object data, CancellationToken cancellationToken) 
+Task<int> ExampleMethod(object data, CancellationToken cancellationToken);
 ```
 Then you need to add the type for cast as an additional parameter to the request:
 ```
 GET /services/IYourService/ExampleMethod/List(String)?args=[["list_item1","list_item2","list_item3"]]
 ```
 
+
+## In/out file streams
+For downloading, it is enough that the method returns a stream object:
+```C#
+Task<Stream> SomeDownloadMethod(string a, string b, string c, CancellationToken cancellationToken);
+```
+Download request will be like this:
+```
+GET /services/IYourService/SomeDownloadMethod?args=["argA","argB","argC"]
+```
+
+For uploading, the method must have an argument of type Stream (position doesn't matter):
+```C#
+Task SomeUploadMethod(Stream stream, string a, string b, string c, CancellationToken cancellationToken); 
+```
+Upload request:
+```
+POST /services/IYourService/SomeUploadMethod?args=["argA","argB","argC"]
+Content-Type: application/octet-stream
+<SomeFileData>
+```
+JavaScript may looks like:
+```js
+let file = document.getElementById('some-input').files[0];
+let response = await fetch('/services/IYourService/SomeUploadMethod?args='+encodeURIComponent(JSON.stringify(["argA","argB","argC"])), {
+  method: 'POST',
+  headers: { 'content-type': file.type || 'application/octet-stream' },
+  body: file,
+});
+```
 
 ## Security
 If you don't want to publish all services in the collection, then just add a filter:
@@ -75,5 +105,5 @@ var result = await client
 
 ## Example projects
 * [WebApi](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
-* [Client](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
+* [ClientApp](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
 
