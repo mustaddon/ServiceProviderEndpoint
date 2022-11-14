@@ -61,7 +61,7 @@ POST /services/IYourService/SomeUploadMethod?args=["argA","argB","argC"]
 Content-Type: application/octet-stream
 <SomeFileData>
 ```
-JavaScript can look like this:
+JavaScript example:
 ```js
 let file = document.getElementById('some-input').files[0];
 let response = await fetch('/services/IYourService/SomeUploadMethod?args='+encodeURIComponent(JSON.stringify(["argA","argB","argC"])), {
