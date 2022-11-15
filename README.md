@@ -26,7 +26,7 @@ Example request with generics:
 ```
 GET /services/IYourService/SomeGenericMethod(Int32)?args=[111,222,333]
 ```
-Requests use URL-safe notation for types **Dictionary(String-Array(Int32))** is equivalent of **Dictionary<string,int[]>** 
+Requests use URL-safe notation for types. For example, **Dictionary(String-Array(Int32))** is equivalent of **Dictionary<string,int[]>**. 
 
 
 ## Type casting
@@ -86,7 +86,7 @@ app.MapServiceProvider("services", builder.Services)
 
 Security for methods can be added via [Scrutor-decorators](https://github.com/khellang/Scrutor):
 ```C#
-builder.Services.AddSingleton<IExampleService, ExampleService>();
+builder.Services.AddScoped<IExampleService, ExampleService>();
 builder.Services.Decorate<IExampleService, SecureExampleService>();
 ```
 
