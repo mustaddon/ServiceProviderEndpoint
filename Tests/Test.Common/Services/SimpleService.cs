@@ -36,7 +36,7 @@ public class SimpleService : ISimpleService
     public IEnumerable<int> PropEnumerable { get; set; } = Array.Empty<int>();
 
 
-    public void MethodVoid() => FieldVal++;
+    public void MethodVoid() { FieldVal++; PropVal++; }
     public int MethodVal(int a, int? b) => a + (b ?? 0);
     public string? MethodRef(string? a) => a;
     public object? MethodObj(object? a) => a;
