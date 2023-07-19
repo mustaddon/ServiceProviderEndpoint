@@ -5,18 +5,18 @@ namespace ServiceProviderEndpoint;
 
 internal static class TypeDeserializers
 {
-    public static TypeDeserializer Create(IEnumerable<ServiceDescriptor> services, IEnumerable<Type> types)
+    public static TypeDeserializer Create(IEnumerable<Type> services, IEnumerable<Type> types)
     {
         return new(services
-            .SelectMany(x => new[] { x.ServiceType }
-                .Concat(x.ServiceType.GetFields(MemberProvider.Flags)
-                    .Select(x => x.FieldType))
-                .Concat(x.ServiceType.GetProperties(MemberProvider.Flags)
-                    .Select(x => x.PropertyType))
-                .Concat(x.ServiceType.GetMethods(MemberProvider.Flags)
-                    .SelectMany(x => x.GetParameters())
-                    .Select(x => x.ParameterType))
-                .Where(x => !x.IsGenericParameter))
+            .SelectMany(x => new[] { x }
+                .Concat(x.GetFields(MemberProvider.Flags)
+                    .Select(xx => xx.FieldType))
+                .Concat(x.GetProperties(MemberProvider.Flags)
+                    .Select(xx => xx.PropertyType))
+                .Concat(x.GetMethods(MemberProvider.Flags)
+                    .SelectMany(xx => xx.GetParameters())
+                    .Select(xx => xx.ParameterType))
+                .Where(xx => !xx.IsGenericParameter))
             .Concat(types.Where(x => !x.IsStatic()))
             .Concat(Types.Cores)
             .Concat(Types.Systems.Value)

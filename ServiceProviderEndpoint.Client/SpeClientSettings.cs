@@ -16,6 +16,7 @@ public class SpeClientSettings
 
     public JsonSerializerOptions JsonSerializerOptions { get; } = new()
     {
+        IncludeFields = true,
         PropertyNameCaseInsensitive = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
     };

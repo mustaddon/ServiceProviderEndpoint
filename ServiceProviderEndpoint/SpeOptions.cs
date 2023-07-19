@@ -7,6 +7,7 @@ public sealed class SpeOptions
 {
     public JsonSerializerOptions JsonSerialization { get; } = new()
     {
+        IncludeFields = true,
         PropertyNameCaseInsensitive = true,
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
     };

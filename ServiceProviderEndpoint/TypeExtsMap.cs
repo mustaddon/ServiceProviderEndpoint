@@ -6,11 +6,11 @@ namespace ServiceProviderEndpoint;
 internal static class TypeExtsMap
 {
 
-    public static Dictionary<Type, HashSet<MethodInfo>> Create(IEnumerable<ServiceDescriptor> ServiceDescriptors, IEnumerable<Type> extensions)
+    public static Dictionary<Type, HashSet<MethodInfo>> Create(IEnumerable<Type> serviceTypes, IEnumerable<Type> extensions)
     {
         var map = new Dictionary<Type, HashSet<MethodInfo>>();
 
-        var services = new HashSet<Type>(ServiceDescriptors.Select(x => x.ServiceType));
+        var services = new HashSet<Type>(serviceTypes);
 
         var extGroups = extensions.Where(x => x.IsStatic())
             .SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static))

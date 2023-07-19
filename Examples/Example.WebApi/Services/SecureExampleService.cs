@@ -19,6 +19,12 @@ public class SecureExampleService : IExampleService
         set => _service.SimpleProp = value;
     }
 
+    public ExampleObj ObjProp
+    {
+        get => _service.ObjProp;
+        set => _service.ObjProp = value;
+    }
+
     public Task<IStreamFile> DownloadFileMethod(string? name = null)
         => _service.DownloadFileMethod(name);
 

@@ -6,6 +6,8 @@ public class ExampleService : IExampleService
 {
     public int SimpleProp { get; set; } = 777;
 
+    public ExampleObj ObjProp { get; set; } = new() { Field = 333, Prop = 888 };
+
     public int SimpleMethod(int a, int b = 10) => a * b;
 
     public Task<T> GenericMethod<T>(T a, CancellationToken cancellationToken) => Task.FromResult(a);
@@ -37,6 +39,5 @@ public class ExampleService : IExampleService
     }
 
     const string DefaultFilename = "example.file";
-
 }
 

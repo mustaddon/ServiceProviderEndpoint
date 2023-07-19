@@ -12,7 +12,7 @@ namespace ServiceProviderEndpoint;
 
 class EndpointProcessor
 {
-    public EndpointProcessor(IEnumerable<ServiceDescriptor> services, IEnumerable<Type> extensions, SpeOptions options)
+    public EndpointProcessor(IEnumerable<Type> services, IEnumerable<Type> extensions, SpeOptions options)
     {
         _options = options;
         _memberProvider = new(services, extensions);

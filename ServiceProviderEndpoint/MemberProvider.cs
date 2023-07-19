@@ -5,9 +5,9 @@ namespace ServiceProviderEndpoint;
 
 internal class MemberProvider
 {
-    public MemberProvider(IEnumerable<ServiceDescriptor> ServiceDescriptors, IEnumerable<Type> extensions)
+    public MemberProvider(IEnumerable<Type> serviceTypes, IEnumerable<Type> extensions)
     {
-        _extensions = TypeExtsMap.Create(ServiceDescriptors, extensions);
+        _extensions = TypeExtsMap.Create(serviceTypes, extensions);
     }
 
     readonly Dictionary<Type, HashSet<MethodInfo>> _extensions;
