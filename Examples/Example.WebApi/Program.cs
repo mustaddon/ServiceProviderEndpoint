@@ -1,6 +1,5 @@
 using Example;
 using Example.WebApi.Services;
-using MediatR;
 using System.Reflection;
 
 
@@ -8,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 // MediatR registration
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 // simple service
 builder.Services.AddSingleton<IExampleService, ExampleService>();
@@ -24,7 +23,7 @@ app.MapServiceProvider("services", builder.Services
     // add a filter if you need
     .Where(x => x.ServiceType != typeof(IConfiguration)),
     // add types for extensions, casting or resolving 
-    new [] { typeof(ExampleServiceExtensions) }
+    new[] { typeof(ExampleServiceExtensions) }
 );
 
 app.Run();

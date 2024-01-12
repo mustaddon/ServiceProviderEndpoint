@@ -14,7 +14,7 @@ builder.Services.AddSingleton<ISimpleService>(x => x.GetRequiredService<SimpleSe
 builder.Services.AddSingleton<IGenericService<int>, GenericService<int>>();
 builder.Services.AddSingleton(typeof(IGenericService<>), typeof(GenericService<>));
 
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddTransient<IRequestHandler<FileUpload<FileMetadata>, FileUploadResult<FileMetadata>>, FileUploadHandler<FileMetadata>>();
 
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);

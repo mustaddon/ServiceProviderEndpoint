@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
 	<Nullable>enable</Nullable>
 	<RootNamespace>ServiceProviderEndpoint</RootNamespace>
@@ -16,11 +16,11 @@
   </ItemGroup>
 	
   <ItemGroup>
-	<PackageReference Include="MetaFile" Version="1.0.1" />
+	<PackageReference Include="MetaFile" Version="1.1.0" />
   </ItemGroup>
 	
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-  	<PackageReference Include="System.Text.Json" Version="7.0.0" />
+  	<PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 	
 </Project>
