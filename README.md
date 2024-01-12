@@ -105,6 +105,6 @@ var result = await client
 
 
 ## Example projects
-* [WebApi](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi)
-* [ClientApp](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
+* [WebApi](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.WebApi/Program.cs)
+* [ClientApp](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client/Program.cs)
 

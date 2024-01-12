@@ -32,4 +32,4 @@ TEST 1 PONG
 TEST 2 PONG
 ```
 
-[Example project...](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client)
+[Example project...](https://github.com/mustaddon/ServiceProviderEndpoint/tree/main/Examples/Example.Client/Program.cs)
