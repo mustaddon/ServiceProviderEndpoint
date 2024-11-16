@@ -53,7 +53,7 @@ public class SpeClient : ISpeClient, IDisposable
 
     public object GetServiceUnsafe(Type serviceType, CancellationToken cancellationToken)
     {
-        return ProxyFactory.Create(serviceType, (method, args) =>
+        return ProxyFactory.CreateInstance(serviceType, (p, method, args) =>
         {
             var returnAsTask = Types.Task.IsAssignableFrom(method.ReturnType);
 
